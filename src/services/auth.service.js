@@ -91,10 +91,47 @@ const refreshAuthToken = async (refreshToken) => {
   }
 };
 
+const emailVerification = async (emailVerificationToken) => {
+  try {
+    const emailVerificationTokenDoc = await Token.findOne({
+      where: {
+        token: emailVerificationToken,
+        type: tokenTypes.EMAIL_VERIFICATION,
+      },
+    });
+
+    if (!emailVerificationTokenDoc) {
+      throw new Error("Invalid or expired email verification token");
+    }
+    const user = await userService.getUserById(
+      emailVerificationTokenDoc.userId
+    );
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    await Token.destroy({
+      where: {
+        userId: user.id,
+        type: tokenTypes.EMAIL_VERIFICATION,
+      },
+    });
+
+    user.isEmailVerified = true;
+    await user.save();
+
+    return user;
+  } catch (error) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, "Email verification failed");
+  }
+};
+
 module.exports = {
   registerUser,
   loginUserWithEmailAndPassword,
   logoutUser,
   resetPassword,
   refreshAuthToken,
+  emailVerification,
 };

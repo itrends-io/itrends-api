@@ -29,10 +29,15 @@ router.post(
   validate(authValidation.refreshTokens),
   authController.refreshTokens
 );
-// router.post(
-//   "/forgot-password",
-//   validate(authValidation.forgotPassword),
-//   authController.forgotPassword
-// );
+router.post(
+  "/forgot-password",
+  validate(authValidation.forgotPassword),
+  authController.resetPassword
+);
+router.post(
+  "/verify-email",
+  validate(authValidation.emailVerification),
+  authController.emailVerification
+);
 
 module.exports = router;

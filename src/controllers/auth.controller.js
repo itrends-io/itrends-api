@@ -72,10 +72,16 @@ const refreshTokens = catchAsync(async (req, res) => {
     .send({ user, token: tokens.access });
 });
 
+const emailVerification = catchAsync(async (req, res) => {
+  const user = await authService.emailVerification(req.query.token);
+  res.send({ isEmailVerified: !!user.isEmailVerified });
+});
+
 module.exports = {
   registerUser,
   loginUserWithEmailAndPassword,
   logoutUser,
   resetPassword,
   refreshTokens,
+  emailVerification,
 };
