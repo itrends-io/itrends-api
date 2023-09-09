@@ -6,7 +6,6 @@ const logger = require("../../config/logger");
 
 const registerUser = catchAsync(async (req, res) => {
   const user = await userService.registerUser(req.body);
-  console.log(user);
   const tokens = await tokenService.generateAuthTokens(user);
   const emailVerificationToken =
     await tokenService.generateEmailVerificationToken(user);
@@ -33,6 +32,21 @@ const registerUser = catchAsync(async (req, res) => {
     .send({ user, token: tokens.access });
 });
 
+const loginUser = catchAsync(async (req, res) => {
+  const { email, password } = req.body;
+  const user = await userService.loginUserWithEmailAndPassword(email, password);
+  const tokens = await tokenService.generateAuthTokens(user);
+  res
+    .cookie("refreshToken", tokens.refresh.token, {
+      maxAge: tokens.refresh.maxAge,
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    })
+    .send({ user, token: tokens.access });
+});
+
 module.exports = {
   registerUser,
+  loginUser,
 };
