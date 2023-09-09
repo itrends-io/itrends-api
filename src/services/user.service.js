@@ -1,6 +1,7 @@
 const httpStatus = require("http-status");
 const { User } = require("../../models");
 const ApiError = require("../utils/ApiError");
+const logger = require("../../config/logger");
 
 const registerUser = async (userBody) => {
   if (await User.isEmailTaken(userBody.email)) {
@@ -15,7 +16,9 @@ const getUserById = async (id) => {
 };
 
 const getUserByEmail = async (email) => {
-  return User.findOne({ email });
+  return User.findOne({
+    where: { email: email },
+  });
 };
 
 const loginUserWithEmailAndPassword = async (email, password) => {
