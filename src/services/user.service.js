@@ -3,14 +3,7 @@ const { User, Token } = require("../../models");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
-
-const registerUser = async (userBody) => {
-  if (await User.isEmailTaken(userBody.email)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Email already taken");
-  }
-  const user = await User.create(userBody);
-  return user;
-};
+const { tokenService } = require(".");
 
 const getUserById = async (id) => {
   return User.findByPk(id);
@@ -22,32 +15,22 @@ const getUserByEmail = async (email) => {
   });
 };
 
-const loginUserWithEmailAndPassword = async (email, password) => {
-  const user = await getUserByEmail(email);
-  if (!user || !(await user.isPasswordMatch(password))) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect email or password");
+const updateUserById = async (userId, updateBody) => {
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+    }
+    Object.assign(user, updateBody);
+    await user.save();
+    return user;
+  } catch (error) {
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "User update failed");
   }
-  return user;
-};
-
-const logoutUser = async (refreshToken) => {
-  const refreshTokenDoc = await Token.findOne({
-    where: {
-      token: refreshToken,
-      type: tokenTypes.REFRESH,
-      blacklisted: false,
-    },
-  });
-  if (!refreshTokenDoc) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Refresh token not found");
-  }
-
-  await refreshTokenDoc.destroy();
-  // logger.info("Successfully logged out");
 };
 
 module.exports = {
-  registerUser,
-  loginUserWithEmailAndPassword,
-  logoutUser,
+  getUserById,
+  getUserByEmail,
+  updateUserById,
 };
