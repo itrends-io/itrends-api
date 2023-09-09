@@ -32,7 +32,7 @@ const registerUser = catchAsync(async (req, res) => {
     .send({ user, token: tokens.access });
 });
 
-const loginUser = catchAsync(async (req, res) => {
+const loginUserWithEmailAndPassword = catchAsync(async (req, res) => {
   const { email, password } = req.body;
   const user = await userService.loginUserWithEmailAndPassword(email, password);
   const tokens = await tokenService.generateAuthTokens(user);
@@ -48,5 +48,5 @@ const loginUser = catchAsync(async (req, res) => {
 
 module.exports = {
   registerUser,
-  loginUser,
+  loginUserWithEmailAndPassword,
 };
