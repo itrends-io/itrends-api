@@ -9,5 +9,10 @@ router.post(
   validate(userValidation.registerUser),
   userController.registerUser
 );
+router.post(
+  "/login",
+  validate(userValidation.login),
+  userController.loginUserWithEmailAndPassword
+);
 
 module.exports = router;
