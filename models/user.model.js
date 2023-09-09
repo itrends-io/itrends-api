@@ -6,6 +6,7 @@ module.exports = (sequelize) => {
     first_name: {
       type: DataTypes.STRING,
       allowNull: false,
+      trim: true,
       validate: {
         notEmpty: true,
       },
@@ -13,6 +14,7 @@ module.exports = (sequelize) => {
     last_name: {
       type: DataTypes.STRING,
       allowNull: false,
+      trim: true,
       validate: {
         notEmpty: true,
       },
@@ -20,17 +22,29 @@ module.exports = (sequelize) => {
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
       unique: true,
+      trim: true,
+      validate: {
+        isEmail: true,
+      },
+    },
+    isEmailVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+      trim: true,
       validate: {
-        notEmpty: true,
+        len: [8, undefined],
       },
+    },
+    role: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      trim: true,
+      defaultValue: "user",
     },
   });
 
