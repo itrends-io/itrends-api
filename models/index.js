@@ -6,7 +6,7 @@ const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
 const db = {};
 
-const connectionString = process.env.DBURI;
+const connectionString = process.env.DATABASE_URL;
 
 const sequelize = new Sequelize(connectionString, {
   dialect: "postgres",
