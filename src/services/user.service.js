@@ -1,7 +1,8 @@
 const httpStatus = require("http-status");
-const { User } = require("../../models");
+const { User, Token } = require("../../models");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
+const { tokenTypes } = require("../../config/token");
 
 const registerUser = async (userBody) => {
   if (await User.isEmailTaken(userBody.email)) {
@@ -42,7 +43,7 @@ const logoutUser = async (refreshToken) => {
   }
 
   await refreshTokenDoc.destroy();
-  logger.info("Successfully logged out");
+  // logger.info("Successfully logged out");
 };
 
 module.exports = {

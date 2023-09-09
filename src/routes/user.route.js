@@ -14,5 +14,10 @@ router.post(
   validate(userValidation.login),
   userController.loginUserWithEmailAndPassword
 );
+router.post(
+  "/logout",
+  validate(userValidation.logout),
+  userController.logoutUser
+);
 
 module.exports = router;

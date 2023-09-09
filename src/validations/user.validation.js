@@ -17,7 +17,17 @@ const login = {
   }),
 };
 
+const logout = {
+  body: Joi.object().keys({}),
+  cookies: Joi.object()
+    .keys({
+      refreshToken: Joi.string().required(),
+    })
+    .unknown(true),
+};
+
 module.exports = {
   registerUser,
   login,
+  logout,
 };

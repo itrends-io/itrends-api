@@ -48,7 +48,13 @@ const loginUserWithEmailAndPassword = catchAsync(async (req, res) => {
     .send({ user, token: tokens.access, message });
 });
 
+const logoutUser = catchAsync(async (req, res) => {
+  await userService.logoutUser(req.cookies.refreshToken);
+  res.status(httpStatus.NO_CONTENT).send("Successfully logged out");
+});
+
 module.exports = {
   registerUser,
   loginUserWithEmailAndPassword,
+  logoutUser,
 };
