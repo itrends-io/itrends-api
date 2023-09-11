@@ -15,7 +15,9 @@ const registerUser = async (userBody) => {
 };
 
 const loginUserWithEmailAndPassword = async (email, password) => {
-  const user = await userService.getUserByEmail(email);
+  const user = await User.findOne({
+    where: { email: email },
+  });
   if (!user || !(await user.isPasswordMatch(password))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect email or password");
   }
