@@ -3,20 +3,26 @@ const { DataTypes, Op } = require("sequelize");
 
 module.exports = (sequelize) => {
   const User = sequelize.define("User", {
-    first_name: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
       trim: true,
       validate: {
         notEmpty: true,
+        len: [4, 40],
       },
     },
-    last_name: {
+    username: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
       trim: true,
+      defaultValue: () => {
+        return `user${sequelize.fn("count", sequelize.col("id")) + 1}`;
+      },
       validate: {
         notEmpty: true,
+        len: [1, 20],
       },
     },
     email: {
@@ -45,6 +51,29 @@ module.exports = (sequelize) => {
       allowNull: false,
       trim: true,
       defaultValue: "user",
+    },
+    bio: {
+      type: DataTypes.STRING(1000),
+      allowNull: true,
+      trim: true,
+    },
+    location: {
+      type: DataTypes.STRING(64),
+      allowNull: true,
+      trim: true,
+    },
+    website: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+      trim: true,
+      validate: {
+        isURL: true,
+      },
+    },
+    amazon_wishlist: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+      trim: true,
     },
   });
 
