@@ -3,8 +3,8 @@ const { User, Token } = require("../../models");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
-const { tokenService } = require("./token.service");
-const { userService } = require("./user.service");
+const { userService, getUserById, updateUserById } = require("./user.service");
+const { tokenService, verifyToken } = require("./token");
 
 const registerUser = async (userBody) => {
   if (await User.isEmailTaken(userBody.email)) {
@@ -15,7 +15,9 @@ const registerUser = async (userBody) => {
 };
 
 const loginUserWithEmailAndPassword = async (email, password) => {
-  const user = await userService.getUserByEmail(email);
+  const user = await User.findOne({
+    where: { email: email },
+  });
   if (!user || !(await user.isPasswordMatch(password))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect email or password");
   }
@@ -30,6 +32,7 @@ const logoutUser = async (refreshToken) => {
       blacklisted: false,
     },
   });
+
   if (!refreshTokenDoc) {
     throw new ApiError(httpStatus.NOT_FOUND, "Refresh token not found");
   }
@@ -39,89 +42,71 @@ const logoutUser = async (refreshToken) => {
 };
 
 const resetPassword = async (resetPasswordToken, newPassword) => {
-  try {
-    const tokenDoc = await Token.findOne({
-      where: {
-        token: resetPasswordToken,
-        type: tokenTypes.RESET_PASSWORD,
-      },
-    });
+  const resetPasswordTokenDoc = await verifyToken(
+    resetPasswordToken,
+    tokenTypes.RESET_PASSWORD
+  );
 
-    if (!tokenDoc) {
-      throw new Error("Invalid or expired reset password token");
-    }
+  logger.info(resetPasswordTokenDoc);
 
-    const user = await userService.getUserById(tokenDoc.userId);
-    if (!user) {
-      throw new Error("User not found");
-    }
+  const user = await getUserById(resetPasswordTokenDoc.user);
 
-    await Token.destroy({
-      where: {
-        userId: user.id,
-        type: tokenTypes.RESET_PASSWORD,
-      },
-    });
-    await updateUserById(user.id, { password: newPassword });
-  } catch (error) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Password reset failed");
+  if (!user) {
+    throw new Error("User not found");
   }
+  await Token.destroy({
+    where: {
+      userId: user.id,
+      type: tokenTypes.RESET_PASSWORD,
+    },
+  });
+  await updateUserById(user.id, { password: newPassword });
 };
 
 const refreshAuthToken = async (refreshToken) => {
-  try {
-    const refreshTokenDoc = await Token.findOne({
-      where: {
-        token: refreshToken,
-        type: tokenTypes.REFRESH,
-      },
-    });
-    if (!refreshTokenDoc) {
-      throw new Error("Invalid or expired refresh token");
-    }
-    const user = await userService.getUserById(refreshTokenDoc.userId);
-    if (!user) {
-      throw new Error("User not found");
-    }
-    await refreshTokenDoc.destroy();
-    const tokens = await tokenService.generateAuthTokens(user);
-    return { user, tokens };
-  } catch (error) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Please authenticate");
+  const refreshTokenDoc = await Token.findOne({
+    where: {
+      token: refreshToken,
+      type: tokenTypes.REFRESH,
+    },
+  });
+  if (!refreshTokenDoc) {
+    throw new Error("Invalid or expired refresh token");
   }
+  const user = await User.findByPk(refreshTokenDoc.userId);
+  if (!user) {
+    throw new Error("User not found");
+  }
+  await refreshTokenDoc.destroy();
+  const tokens = await tokenService.generateAuthTokens(user);
+  return { user, tokens };
 };
 
 const emailVerification = async (emailVerificationToken) => {
   try {
-    const emailVerificationTokenDoc = await Token.findOne({
-      where: {
-        token: emailVerificationToken,
-        type: tokenTypes.EMAIL_VERIFICATION,
-      },
-    });
-
-    if (!emailVerificationTokenDoc) {
-      throw new Error("Invalid or expired email verification token");
-    }
-    const user = await userService.getUserById(
-      emailVerificationTokenDoc.userId
+    const emailVerificationTokenDoc = await tokenService.verifyToken(
+      emailVerificationToken,
+      tokenTypes.EMAIL_VERIFICATION
     );
-
+    const user = await userService.getUserById(emailVerificationTokenDoc.user);
     if (!user) {
       throw new Error("User not found");
     }
-
     await Token.destroy({
       where: {
         userId: user.id,
         type: tokenTypes.EMAIL_VERIFICATION,
       },
     });
+    const updatedUser = await userService.updateUserById(user.id, {
+      isEmailVerified: true,
+    });
 
-    user.isEmailVerified = true;
-    await user.save();
+    if (!updatedUser) {
+      throw new Error("Failed to update user email verification status");
+    }
 
-    return user;
+    return updatedUser;
   } catch (error) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Email verification failed");
   }
