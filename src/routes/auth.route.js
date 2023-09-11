@@ -20,18 +20,19 @@ router.post(
   authController.logoutUser
 );
 router.post(
-  "/reset-password",
-  validate(authValidation.resetPassword),
-  authController.resetPassword
+  "/forgot-password",
+  validate(authValidation.forgotPassword),
+  authController.forgotPassword
 );
 router.post(
   "/refresh-tokens",
   validate(authValidation.refreshTokens),
   authController.refreshTokens
 );
+
 router.post(
-  "/forgot-password",
-  validate(authValidation.forgotPassword),
+  "/reset-password",
+  validate(authValidation.resetPassword),
   authController.resetPassword
 );
 router.post(

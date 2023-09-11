@@ -13,7 +13,7 @@ const registerUser = catchAsync(async (req, res) => {
 
   try {
     await emailService.sendEmailVerificationEmail(
-      email,
+      req.body.email,
       emailVerificationToken
     );
   } catch (error) {
@@ -53,6 +53,15 @@ const logoutUser = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send("Successfully logged out");
 });
 
+const forgotPassword = catchAsync(async (req, res) => {
+  const resetPasswordToken = await tokenService.generateResetPasswordToken(
+    req.body.email
+  );
+  await emailService.sendResetPasswordEmail(req.body.email, resetPasswordToken);
+  logger.info("password reset sent");
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
 const resetPassword = catchAsync(async (req, res) => {
   await authService.resetPassword(req.query.token, req.body.password);
   res.status(httpStatus.NO_CONTENT).send();
@@ -69,7 +78,7 @@ const refreshTokens = catchAsync(async (req, res) => {
       sameSite: "none",
       secure: true,
     })
-    .send({ user, token: tokens.access });
+    .send({ user, token: tokens.access, message: "token refreshed" });
 });
 
 const emailVerification = catchAsync(async (req, res) => {
@@ -81,6 +90,7 @@ module.exports = {
   registerUser,
   loginUserWithEmailAndPassword,
   logoutUser,
+  forgotPassword,
   resetPassword,
   refreshTokens,
   emailVerification,

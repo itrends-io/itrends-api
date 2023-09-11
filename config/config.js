@@ -8,7 +8,7 @@ const envVarSchema = Joi.object()
   .keys({
     NODE_ENV: Joi.string().valid("production", "development").required(),
     PORT: Joi.number().default(8005),
-    CLIENT_URL: Joi.string().allow("").default("localhost:3005"),
+    CLIENT_URL: Joi.string().allow("").default("n.diamond@simpsgroup.co.uk"),
     JWT_SECRET: Joi.string().required().description("JWT secret key"),
     JWT_ACCESS_EXPIRATION_MINUTES: Joi.number()
       .default(30)
@@ -56,4 +56,8 @@ module.exports = {
     },
     from: envVars.EMAIL_FROM,
   },
+  clientURL:
+    envVars.NODE_ENV === "production"
+      ? envVars.CLIENT_URL
+      : "https://itrends.io",
 };

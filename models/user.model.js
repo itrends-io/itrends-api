@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const { DataTypes, Op } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
 
 module.exports = (sequelize) => {
   const User = sequelize.define("User", {
@@ -14,16 +15,10 @@ module.exports = (sequelize) => {
     },
     username: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       unique: true,
       trim: true,
-      defaultValue: () => {
-        return `user${sequelize.fn("count", sequelize.col("id")) + 1}`;
-      },
-      validate: {
-        notEmpty: true,
-        len: [1, 20],
-      },
+      defaultValue: null,
     },
     email: {
       type: DataTypes.STRING,
