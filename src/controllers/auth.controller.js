@@ -5,6 +5,7 @@ const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 
 const registerUser = catchAsync(async (req, res) => {
+  console.log(req.body);
   const user = await authService.registerUser(req.body);
   const tokens = await tokenService.generateAuthTokens(user);
   const message = "Successfully registered";
@@ -30,7 +31,16 @@ const registerUser = catchAsync(async (req, res) => {
       secure: true,
     })
     .status(httpStatus.CREATED)
-    .send({ user, token: tokens.access, message });
+    .send({
+      user: {
+        name: user.name,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+      },
+      token: tokens.access,
+      message,
+    });
 });
 
 const loginUserWithEmailAndPassword = catchAsync(async (req, res) => {

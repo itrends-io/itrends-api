@@ -6,16 +6,13 @@ const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
 const db = {};
 
-const connectionString = process.env.DATABASE_URL;
+const connectionString =
+  "postgresql://postgres:password@localhost:5432/itrends";
 
 const sequelize = new Sequelize(connectionString, {
   dialect: "postgres",
   protocol: "postgres",
-  dialectOptions: {
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  },
+  dialectOptions: {},
 });
 
 fs.readdirSync(__dirname)

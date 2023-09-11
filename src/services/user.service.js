@@ -3,7 +3,7 @@ const { User, Token } = require("../../models");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
-const { tokenService } = require(".");
+// const { tokenService } = require(".");
 
 const getUserById = async (id) => {
   return User.findByPk(id);
