@@ -50,6 +50,7 @@ const resetPassword = async (resetPasswordToken, newPassword) => {
     });
 
     if (!tokenDoc) {
+      console.error("Token not found or error occurred during retrieval");
       throw new Error("Invalid or expired reset password token");
     }
 
