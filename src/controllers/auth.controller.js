@@ -78,7 +78,7 @@ const refreshTokens = catchAsync(async (req, res) => {
       sameSite: "none",
       secure: true,
     })
-    .send({ user, token: tokens.access });
+    .send({ user, token: tokens.access, message: "token refreshed" });
 });
 
 const emailVerification = catchAsync(async (req, res) => {

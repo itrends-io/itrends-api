@@ -20,9 +20,9 @@ router.post(
   authController.logoutUser
 );
 router.post(
-  "/reset-password",
-  validate(authValidation.resetPassword),
-  authController.resetPassword
+  "/forgot-password",
+  validate(authValidation.forgotPassword),
+  authController.forgotPassword
 );
 router.post(
   "/refresh-tokens",
@@ -31,9 +31,9 @@ router.post(
 );
 
 router.post(
-  "/forgot-password",
-  validate(authValidation.forgotPassword),
-  authController.forgotPassword
+  "/reset-password",
+  validate(authValidation.resetPassword),
+  authController.resetPassword
 );
 router.post(
   "/verify-email",
