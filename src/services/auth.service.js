@@ -32,6 +32,7 @@ const logoutUser = async (refreshToken) => {
       blacklisted: false,
     },
   });
+
   if (!refreshTokenDoc) {
     throw new ApiError(httpStatus.NOT_FOUND, "Refresh token not found");
   }
@@ -42,30 +43,26 @@ const logoutUser = async (refreshToken) => {
 
 const resetPassword = async (resetPasswordToken, newPassword) => {
   try {
-    const tokenDoc = await Token.findOne({
-      where: {
-        token: resetPasswordToken,
-        type: tokenTypes.RESET_PASSWORD,
-      },
-    });
+    const resetPasswordTokenDoc = await tokenService.verifyToken(
+      resetPasswordToken,
+      tokenTypes.RESET_PASSWORD
+    );
 
-    if (!tokenDoc) {
-      console.error("Token not found or error occurred during retrieval");
-      throw new Error("Invalid or expired reset password token");
-    }
+    console.log(newPassword);
+    logger.info(resetPasswordTokenDoc);
 
-    const user = await userService.getUserById(tokenDoc.userId);
+    const user = await userService.getUserById(resetPasswordTokenDoc.user);
+
     if (!user) {
       throw new Error("User not found");
     }
-
     await Token.destroy({
       where: {
         userId: user.id,
         type: tokenTypes.RESET_PASSWORD,
       },
     });
-    await updateUserById(user.id, { password: newPassword });
+    await userService.updateUserById(user.id, { password: newPassword });
   } catch (error) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Password reset failed");
   }

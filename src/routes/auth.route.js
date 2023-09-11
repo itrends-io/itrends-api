@@ -29,10 +29,11 @@ router.post(
   validate(authValidation.refreshTokens),
   authController.refreshTokens
 );
+
 router.post(
   "/forgot-password",
   validate(authValidation.forgotPassword),
-  authController.resetPassword
+  authController.forgotPassword
 );
 router.post(
   "/verify-email",
