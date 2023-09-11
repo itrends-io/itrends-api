@@ -13,7 +13,7 @@ const registerUser = catchAsync(async (req, res) => {
 
   try {
     await emailService.sendEmailVerificationEmail(
-      email,
+      req.body.email,
       emailVerificationToken
     );
   } catch (error) {
