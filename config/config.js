@@ -10,7 +10,7 @@ const envVarSchema = Joi.object()
       .valid("production", "development", "demo")
       .required(),
     PORT: Joi.number().default(8005),
-    CLIENT_URL: Joi.string().allow("").default("n.diamond@simpsgroup.co.uk"),
+    CLIENT_URL: Joi.string().allow("").default("https://itrends.io"),
     DATABASE_URL: Joi.string().required().description("PG Dev DB url"),
     LOCAL_DB: Joi.string().required().description("PG Demo DB url"),
     JWT_SECRET: Joi.string().required().description("JWT secret key"),
