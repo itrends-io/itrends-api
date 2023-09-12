@@ -86,7 +86,7 @@ const resetPasswordFromEmailToken = async (resetPasswordToken, newPassword) => {
 
   logger.info(resetPasswordTokenDoc);
 
-  const user = await getUserById(resetPasswordTokenDoc.user);
+  const user = await getUserById(resetPasswordTokenDoc.userId);
 
   if (!user) {
     throw new Error("User not found");
@@ -97,7 +97,9 @@ const resetPasswordFromEmailToken = async (resetPasswordToken, newPassword) => {
       type: tokenTypes.RESET_PASSWORD,
     },
   });
-  await updateUserById(user.id, { password: newPassword });
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(newPassword, salt);
+  await updateUserById(user.id, { password: hashedPassword });
 };
 
 const refreshAuthToken = async (refreshToken) => {
