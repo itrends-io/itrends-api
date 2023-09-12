@@ -1,18 +1,21 @@
 const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
+const config = require("../config/config");
 
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || "development";
 const db = {};
 
-const connectionString =
-  "postgresql://postgres:password@localhost:5432/itrends";
+const connectionString = config.pg.url;
 
 const sequelize = new Sequelize(connectionString, {
   dialect: "postgres",
   protocol: "postgres",
-  dialectOptions: {},
+  dialectOptions: {
+    // ssl: {
+    //   rejectUnauthorized: false,
+    // },
+  },
 });
 
 fs.readdirSync(__dirname)

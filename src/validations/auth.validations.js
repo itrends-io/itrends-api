@@ -12,7 +12,7 @@ const register = {
 const login = {
   body: Joi.object().keys({
     email: Joi.string().required(),
-    password: Joi.string().required(),
+    password: Joi.string().required().custom(password),
   }),
 };
 
@@ -56,6 +56,20 @@ const emailVerification = {
   body: Joi.object().keys({}),
 };
 
+const changePassword = {
+  body: Joi.object().keys({
+    // email: Joi.string().email().required(),
+    password: Joi.string().required().custom(password),
+    new_password: Joi.string().required().custom(password),
+    confirm_password: Joi.string().required().custom(password),
+  }),
+  cookies: Joi.object()
+    .keys({
+      refreshToken: Joi.string().required(),
+    })
+    .unknown(true),
+};
+
 module.exports = {
   register,
   login,
@@ -64,4 +78,5 @@ module.exports = {
   resetPassword,
   forgotPassword,
   emailVerification,
+  changePassword,
 };
