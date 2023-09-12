@@ -38,7 +38,6 @@ const verifyToken = async (token, type) => {
       blacklisted: false,
     },
   });
-  console.log("token doc:", tokenDoc);
   if (!tokenDoc) {
     throw new Error("Token not found");
   }
