@@ -58,10 +58,16 @@ const emailVerification = {
 
 const changePassword = {
   body: Joi.object().keys({
+    // email: Joi.string().email().required(),
     password: Joi.string().required().custom(password),
-    newPassword: Joi.string().required().custom(password),
-    confirmPassword: Joi.string().required().custom(password),
+    new_password: Joi.string().required().custom(password),
+    confirm_password: Joi.string().required().custom(password),
   }),
+  cookies: Joi.object()
+    .keys({
+      refreshToken: Joi.string().required(),
+    })
+    .unknown(true),
 };
 
 module.exports = {

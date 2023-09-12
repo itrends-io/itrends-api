@@ -40,5 +40,10 @@ router.post(
   validate(authValidation.emailVerification),
   authController.emailVerification
 );
+router.post(
+  "/change-password",
+  validate(authValidation.changePassword),
+  authController.changePassword
+);
 
 module.exports = router;

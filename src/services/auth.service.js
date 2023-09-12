@@ -5,6 +5,7 @@ const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
 const { userService, getUserById, updateUserById } = require("./user.service");
 const { tokenService, verifyToken } = require("./token");
+const bcrypt = require("bcryptjs");
 
 const registerUser = async (userBody) => {
   if (await User.isEmailTaken(userBody.email)) {
@@ -22,6 +23,38 @@ const loginUserWithEmailAndPassword = async (email, password) => {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect email or password");
   }
   return user;
+};
+
+const changePassword = async (userBody, refreshToken) => {
+  const refreshTokenDoc = await Token.findOne({
+    where: {
+      token: refreshToken,
+      type: tokenTypes.REFRESH,
+    },
+  });
+  if (!refreshTokenDoc) {
+    throw new Error("Invalid or expired refresh token");
+  }
+  const user = await User.findByPk(refreshTokenDoc.userId);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (!(await user.isPasswordMatch(userBody.password))) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect password");
+  }
+
+  if (userBody.new_password !== userBody.confirm_password) {
+    throw new ApiError(
+      httpStatus.UNAUTHORIZED,
+      "New password and confirm password must be the same"
+    );
+  }
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(userBody.new_password, salt);
+
+  await updateUserById(user.id, { password: hashedPassword });
 };
 
 const logoutUser = async (refreshToken) => {
@@ -119,4 +152,5 @@ module.exports = {
   resetPassword,
   refreshAuthToken,
   emailVerification,
+  changePassword,
 };

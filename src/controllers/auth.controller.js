@@ -48,6 +48,14 @@ const loginUserWithEmailAndPassword = catchAsync(async (req, res) => {
     .send({ user, token: tokens.access, message });
 });
 
+const changePassword = catchAsync(async (req, res) => {
+  const result = await authService.changePassword(
+    req.body,
+    req.cookies.refreshToken
+  );
+  res.status(httpStatus.ACCEPTED).send("Successfully changed passsword");
+});
+
 const logoutUser = catchAsync(async (req, res) => {
   await authService.logoutUser(req.cookies.refreshToken);
   res.status(httpStatus.NO_CONTENT).send("Successfully logged out");
@@ -94,4 +102,5 @@ module.exports = {
   resetPassword,
   refreshTokens,
   emailVerification,
+  changePassword,
 };
