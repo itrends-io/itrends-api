@@ -4,7 +4,11 @@ const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
 const { userService, getUserById, updateUserById } = require("./user.service");
-const { tokenService, verifyToken } = require("./token");
+const {
+  tokenService,
+  verifyToken,
+  generateAuthTokens,
+} = require("./token.service");
 const bcrypt = require("bcryptjs");
 
 const registerUser = async (userBody) => {
@@ -74,7 +78,7 @@ const logoutUser = async (refreshToken) => {
   // logger.info("Successfully logged out");
 };
 
-const resetPassword = async (resetPasswordToken, newPassword) => {
+const resetPasswordFromEmailToken = async (resetPasswordToken, newPassword) => {
   const resetPasswordTokenDoc = await verifyToken(
     resetPasswordToken,
     tokenTypes.RESET_PASSWORD
@@ -111,45 +115,41 @@ const refreshAuthToken = async (refreshToken) => {
     throw new Error("User not found");
   }
   await refreshTokenDoc.destroy();
-  const tokens = await tokenService.generateAuthTokens(user);
+  const tokens = await generateAuthTokens(user);
   return { user, tokens };
 };
 
 const emailVerification = async (emailVerificationToken) => {
-  try {
-    const emailVerificationTokenDoc = await tokenService.verifyToken(
-      emailVerificationToken,
-      tokenTypes.EMAIL_VERIFICATION
-    );
-    const user = await userService.getUserById(emailVerificationTokenDoc.user);
-    if (!user) {
-      throw new Error("User not found");
-    }
-    await Token.destroy({
-      where: {
-        userId: user.id,
-        type: tokenTypes.EMAIL_VERIFICATION,
-      },
-    });
-    const updatedUser = await userService.updateUserById(user.id, {
-      isEmailVerified: true,
-    });
-
-    if (!updatedUser) {
-      throw new Error("Failed to update user email verification status");
-    }
-
-    return updatedUser;
-  } catch (error) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Email verification failed");
+  const emailVerificationTokenDoc = await tokenService.verifyToken(
+    emailVerificationToken,
+    tokenTypes.EMAIL_VERIFICATION
+  );
+  const user = await userService.getUserById(emailVerificationTokenDoc.user);
+  if (!user) {
+    throw new Error("User not found");
   }
+  await Token.destroy({
+    where: {
+      userId: user.id,
+      type: tokenTypes.EMAIL_VERIFICATION,
+    },
+  });
+  const updatedUser = await userService.updateUserById(user.id, {
+    isEmailVerified: true,
+  });
+
+  if (!updatedUser) {
+    throw new Error("Failed to update user email verification status");
+  }
+
+  return updatedUser;
 };
 
 module.exports = {
   registerUser,
   loginUserWithEmailAndPassword,
   logoutUser,
-  resetPassword,
+  resetPasswordFromEmailToken,
   refreshAuthToken,
   emailVerification,
   changePassword,
