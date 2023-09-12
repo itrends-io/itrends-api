@@ -120,11 +120,11 @@ const refreshAuthToken = async (refreshToken) => {
 };
 
 const emailVerification = async (emailVerificationToken) => {
-  const emailVerificationTokenDoc = await tokenService.verifyToken(
+  const emailVerificationTokenDoc = await verifyToken(
     emailVerificationToken,
     tokenTypes.EMAIL_VERIFICATION
   );
-  const user = await userService.getUserById(emailVerificationTokenDoc.user);
+  const user = await getUserById(emailVerificationTokenDoc.userId);
   if (!user) {
     throw new Error("User not found");
   }
@@ -134,7 +134,7 @@ const emailVerification = async (emailVerificationToken) => {
       type: tokenTypes.EMAIL_VERIFICATION,
     },
   });
-  const updatedUser = await userService.updateUserById(user.id, {
+  const updatedUser = await updateUserById(user.id, {
     isEmailVerified: true,
   });
 

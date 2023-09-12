@@ -94,6 +94,7 @@ const refreshTokens = catchAsync(async (req, res) => {
 
 const emailVerification = catchAsync(async (req, res) => {
   const user = await authService.emailVerification(req.query.token);
+  console.log("this is token:", req.query.token);
   res.send({ isEmailVerified: !!user.isEmailVerified });
 });
 
