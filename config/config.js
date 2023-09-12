@@ -6,9 +6,13 @@ dotenv.config({ path: path.join(__dirname, "../.env") });
 
 const envVarSchema = Joi.object()
   .keys({
-    NODE_ENV: Joi.string().valid("production", "development").required(),
+    NODE_ENV: Joi.string()
+      .valid("production", "development", "demo")
+      .required(),
     PORT: Joi.number().default(8005),
     CLIENT_URL: Joi.string().allow("").default("n.diamond@simpsgroup.co.uk"),
+    DATABASE_URL: Joi.string().required().description("PG Dev DB url"),
+    LOCAL_DB: Joi.string().required().description("PG Demo DB url"),
     JWT_SECRET: Joi.string().required().description("JWT secret key"),
     JWT_ACCESS_EXPIRATION_MINUTES: Joi.number()
       .default(30)
@@ -60,4 +64,8 @@ module.exports = {
     envVars.NODE_ENV === "production"
       ? envVars.CLIENT_URL
       : "https://itrends.io",
+  pg: {
+    url: envVars.NODE_ENV === "demo" ? envVars.LOCAL_DB : envVars.DATABASE_URL,
+    options: {},
+  },
 };
