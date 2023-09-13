@@ -13,15 +13,15 @@ module.exports = (sequelize) => {
         len: [4, 40],
       },
     },
-    googleId: {
-      required: false,
-      type: String,
-    },
     twitterId: {
-      required: false,
-      type: String,
+      type: DataTypes.STRING,
     },
-    profileImage: String,
+    ouathGoogle: {
+      type: DataTypes.STRING,
+    },
+    profilePhoto: {
+      type: DataTypes.STRING,
+    },
     username: {
       type: DataTypes.STRING,
       allowNull: true,

@@ -4,8 +4,6 @@ const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
 const { userService, getUserById, updateUserById } = require("./user.service");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const TwitterStrategy = require("passport-twitter").Strategy;
 const {
   tokenService,
   verifyToken,
@@ -31,88 +29,6 @@ const loginUserWithEmailAndPassword = async (email, password) => {
   return user;
 };
 
-const googleOAuth = (passport) => {
-  passport.use(
-    new GoogleStrategy(
-      {
-        clientID:
-          "460610816314-erilct3d2hg3ugue45do08mngb27emt5.apps.googleusercontent.com",
-        clientSecret: "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",
-        callbackURL: "http://localhost:8000/api/v1/auth/google/callback",
-      },
-      async (accessToken, refreshToken, profile, done) => {
-        const newUser = {
-          googleId: profile.id,
-          name: profile.displayName,
-          email: profile.emails[0].value,
-          profileImage: profile.photos[0].value,
-          password: "98nrjegbfd8u@8782*&#@6g2vd",
-        };
-
-        try {
-          let user = await User.findOne({ googleId: profile.id });
-
-          if (user) {
-            done(null, user);
-          } else {
-            user = await User.create(newUser);
-            done(null, user);
-          }
-        } catch (err) {
-          console.error(err);
-        }
-      }
-    )
-  );
-
-  passport.serializeUser((user, done) => {
-    done(null, user.id);
-  });
-  passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => done(err, user));
-  });
-};
-
-const twitterOAuth = (passport) => {
-  passport.use(
-    new TwitterStrategy(
-      {
-        consumerKey: "0YtBFEqflLf52Qzwg85Y7idtG",
-        consumerSecret: "te8hBMzr6uA0rambDnH1qSBJ69t5dBoj0fLBmdowXL22UTDTTj",
-        callbackURL: "api/v1/auth/twitter/callback",
-      },
-      function (accessToken, refreshToken, profile, done) {
-        User.findOne({ twitterId: profile.id }, async (err, doc) => {
-          if (err) {
-            return done(err, null);
-          }
-
-          if (!doc) {
-            const newUser = new User({
-              twitterId: profile.id,
-              username: profile.username,
-            });
-
-            console.log(newUser);
-            await newUser.save();
-            done(null, newUser);
-          }
-          done(null, doc);
-        });
-      }
-    )
-  );
-
-  passport.serializeUser((user, done) => {
-    done(null, user.id);
-  });
-
-  passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => {
-      done(err, user);
-    });
-  });
-};
 const changePassword = async (userBody, refreshToken) => {
   const refreshTokenDoc = await Token.findOne({
     where: {
@@ -233,8 +149,6 @@ const emailVerification = async (emailVerificationToken) => {
 
 module.exports = {
   registerUser,
-  googleOAuth,
-  twitterOAuth,
   loginUserWithEmailAndPassword,
   logoutUser,
   resetPasswordFromEmailToken,

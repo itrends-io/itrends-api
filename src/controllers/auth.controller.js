@@ -4,6 +4,7 @@ const { authService, tokenService, emailService } = require("../services");
 const catchAsync = require("../utils/catchAsync");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
+const { googleOAuth } = require("../../config/passport");
 
 const registerUser = catchAsync(async (req, res) => {
   const user = await authService.registerUser(req.body);
@@ -33,6 +34,10 @@ const registerUser = catchAsync(async (req, res) => {
     .status(httpStatus.CREATED)
     .send({ user, token: tokens.access, message });
 });
+
+const googleOauth = (passport) => {
+  googleOAuth(passport);
+};
 
 const loginUserWithEmailAndPassword = catchAsync(async (req, res) => {
   const { email, password } = req.body;
@@ -101,6 +106,7 @@ const emailVerification = catchAsync(async (req, res) => {
 
 module.exports = {
   registerUser,
+  googleOauth,
   loginUserWithEmailAndPassword,
   logoutUser,
   forgotPassword,

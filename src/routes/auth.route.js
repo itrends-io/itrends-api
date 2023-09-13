@@ -4,6 +4,9 @@ const validate = require("../middlewares/validate");
 const { authValidation } = require("../validations");
 const { authController } = require("../controllers");
 const passport = require("passport");
+const { googleOauth } = require("../controllers/auth.controller");
+
+googleOauth(passport);
 
 router.post(
   "/register",
@@ -19,7 +22,7 @@ router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
-    const redirectURL = "https://localhost:8000/api/v1/auth/google/callback";
+    const redirectURL = "https://onlyfans.com";
     res.redirect(redirectURL);
   }
 );
