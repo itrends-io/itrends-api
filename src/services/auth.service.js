@@ -6,7 +6,6 @@ const { tokenTypes } = require("../../config/token");
 const { userService, getUserById, updateUserById } = require("./user.service");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const TwitterStrategy = require("passport-twitter").Strategy;
-const { tokenService, verifyToken } = require("./token");
 const {
   tokenService,
   verifyToken,
@@ -41,11 +40,27 @@ const googleOAuth = (passport) => {
         clientSecret: "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",
         callbackURL: "http://localhost:8000/api/v1/auth/google/callback",
       },
-
       async (accessToken, refreshToken, profile, done) => {
-        console.log("Google OAuth2 Authentication Attempt:", profile);
+        const newUser = {
+          googleId: profile.id,
+          name: profile.displayName,
+          email: profile.emails[0].value,
+          profileImage: profile.photos[0].value,
+          password: "98nrjegbfd8u@8782*&#@6g2vd",
+        };
 
-        done(null, profile);
+        try {
+          let user = await User.findOne({ googleId: profile.id });
+
+          if (user) {
+            done(null, user);
+          } else {
+            user = await User.create(newUser);
+            done(null, user);
+          }
+        } catch (err) {
+          console.error(err);
+        }
       }
     )
   );
@@ -96,7 +111,7 @@ const twitterOAuth = (passport) => {
     User.findById(id, (err, user) => {
       done(err, user);
     });
-  })
+  });
 };
 const changePassword = async (userBody, refreshToken) => {
   const refreshTokenDoc = await Token.findOne({
