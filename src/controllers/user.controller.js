@@ -13,6 +13,28 @@ const getUserByPk = catchAsync(async (req, res) => {
   res.status(httpStatus.ACCEPTED).send({ user, message: "" });
 });
 
+const followUser = catchAsync(async (req, res) => {
+  const data = await userService.followUser(
+    req.params.userId,
+    req.headers.authorization,
+    req.body.followingId
+  );
+  res
+    .status(httpStatus.ACCEPTED)
+    .send({ data: data, message: "you are now following" });
+});
+
+const unFollowUser = catchAsync(async (req, res) => {
+  const data = await userService.followUser(
+    req.params.userId,
+    req.headers.authorization,
+    req.body.unFollowId
+  );
+  res.status(httpStatus.ACCEPTED).send({ data: data, message: "success" });
+});
+
 module.exports = {
   getUserByPk,
+  followUser,
+  unFollowUser,
 };

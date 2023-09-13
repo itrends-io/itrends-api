@@ -91,6 +91,14 @@ module.exports = (sequelize) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    followersCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+    followingCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
   });
 
   User.beforeCreate(async (user, options) => {
@@ -115,7 +123,32 @@ module.exports = (sequelize) => {
     return !!user;
   };
 
+  const UserFollowing = sequelize.define(
+    "UserFollowing",
+    {},
+    { timestamps: false }
+  );
+  const UserFollowers = sequelize.define(
+    "UserFollowers",
+    {},
+    { timestamps: false }
+  );
+
+  User.belongsToMany(User, {
+    as: "followers",
+    through: "UserFollowers",
+    foreignKey: "followerId",
+  });
+
+  User.belongsToMany(User, {
+    as: "following",
+    through: "UserFollowing",
+    foreignKey: "followingId",
+  });
+
   User.sync();
+  UserFollowing.sync();
+  UserFollowers.sync();
 
   return User;
 };
