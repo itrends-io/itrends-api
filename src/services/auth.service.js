@@ -7,6 +7,11 @@ const { getUserById, updateUserById } = require("./user.service");
 const { verifyToken, generateAuthTokens } = require("./token.service");
 const bcrypt = require("bcryptjs");
 
+const generateUsername = async () => {
+  const users = await User.findAll();
+  return `u${users.length}`;
+};
+
 const registerUser = async (userBody) => {
   if (await User.isEmailTaken(userBody.email)) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Email already taken");
@@ -151,4 +156,5 @@ module.exports = {
   refreshAuthToken,
   emailVerification,
   changePassword,
+  generateUsername,
 };
