@@ -1,6 +1,6 @@
 const objectId = (value, helpers) => {
   if (!value.match(/^[0-9a-fA-F]{24}$/)) {
-    return helpers.message('"{{#label}}" must be a valid mongo id');
+    return helpers.message('"{{#label}}" must be a valid pg id');
   }
   return value;
 };
@@ -17,7 +17,11 @@ const password = (value, helpers) => {
   return value;
 };
 
+const tokenRegex =
+  /^Bearer [A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.[A-Za-z0-9-_.+/=]*$/;
+
 module.exports = {
   objectId,
   password,
+  tokenRegex,
 };
