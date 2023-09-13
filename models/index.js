@@ -6,15 +6,15 @@ const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
 const db = {};
 
-const connectionString = process.env.DATABASE_URL;
+const connectionString = process.env.LOCAL_DB;
 
 const sequelize = new Sequelize(connectionString, {
   dialect: "postgres",
   protocol: "postgres",
   dialectOptions: {
-    ssl: {
-      rejectUnauthorized: false,
-    },
+    // ssl: {
+    //   rejectUnauthorized: false,
+    // },
   },
 });
 

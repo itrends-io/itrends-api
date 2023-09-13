@@ -1,4 +1,5 @@
 const httpStatus = require("http-status");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const { authService, tokenService, emailService } = require("../services");
 const catchAsync = require("../utils/catchAsync");
 const ApiError = require("../utils/ApiError");

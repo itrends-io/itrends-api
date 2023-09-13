@@ -13,6 +13,14 @@ module.exports = (sequelize) => {
         len: [4, 40],
       },
     },
+    // googleId: {
+    //   required: false,
+    //   type: String,
+    // },
+    twitterId: {
+      required: false,
+      type: String,
+    },
     username: {
       type: DataTypes.STRING,
       allowNull: true,
