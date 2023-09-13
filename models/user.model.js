@@ -70,6 +70,27 @@ module.exports = (sequelize) => {
       allowNull: true,
       trim: true,
     },
+    phoneNumber: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      trim: true,
+      // validate: {
+      //   isPhoneNumber(value) {
+      //     if (!/^\d{10}$/.test(value)) {
+      //       throw new Error("Invalid phone number format");
+      //     }
+      //   },
+      // },
+    },
+    twoFactorSecret: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    isTwoFactorEnabled: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   });
 
   User.beforeCreate(async (user, options) => {

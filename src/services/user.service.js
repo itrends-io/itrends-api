@@ -3,10 +3,29 @@ const { User, Token } = require("../../models");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
-const { tokenService } = require(".");
+const { verifyToken } = require("./token.service");
 
-const getUserById = async (id) => {
-  return User.findByPk(id);
+const getUserById = async (userId, accessToken) => {
+  if (!accessToken) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Token is required");
+  }
+  const getUserTokenDoc = await Token.findOne({
+    where: {
+      token: accessToken,
+      type: tokenTypes.ACCESS,
+    },
+  });
+  logger.info(getUserTokenDoc);
+  if (!getUserTokenDoc) {
+    throw new Error("Invalid or expired access token");
+  }
+
+  if (getUserTokenDoc.userId != userId) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Token not match user");
+  }
+
+  const user = await User.findByPk(getUserTokenDoc.userId);
+  return user;
 };
 
 const getUserByEmail = async (email) => {
