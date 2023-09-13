@@ -3,12 +3,8 @@ const { User, Token } = require("../../models");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
-const { userService, getUserById, updateUserById } = require("./user.service");
-const {
-  tokenService,
-  verifyToken,
-  generateAuthTokens,
-} = require("./token.service");
+const { getUserById, updateUserById } = require("./user.service");
+const { verifyToken, generateAuthTokens } = require("./token.service");
 const bcrypt = require("bcryptjs");
 
 const registerUser = async (userBody) => {
@@ -29,17 +25,17 @@ const loginUserWithEmailAndPassword = async (email, password) => {
   return user;
 };
 
-const changePassword = async (userBody, refreshToken) => {
-  const refreshTokenDoc = await Token.findOne({
+const changePassword = async (userBody, accessToken) => {
+  const accessTokenDoc = await Token.findOne({
     where: {
-      token: refreshToken,
-      type: tokenTypes.REFRESH,
+      token: accessToken,
+      type: tokenTypes.ACCESS,
     },
   });
-  if (!refreshTokenDoc) {
+  if (!accessTokenDoc) {
     throw new Error("Invalid or expired refresh token");
   }
-  const user = await User.findByPk(refreshTokenDoc.userId);
+  const user = await User.findByPk(accessTokenDoc.userId);
 
   if (!user) {
     throw new Error("User not found");
@@ -84,9 +80,9 @@ const resetPasswordFromEmailToken = async (resetPasswordToken, newPassword) => {
     tokenTypes.RESET_PASSWORD
   );
 
-  logger.info(resetPasswordTokenDoc);
+  // logger.info(resetPasswordTokenDoc);
 
-  const user = await getUserById(resetPasswordTokenDoc.userId);
+  const user = await User.findByPk(resetPasswordTokenDoc.userId);
 
   if (!user) {
     throw new Error("User not found");
@@ -126,7 +122,7 @@ const emailVerification = async (emailVerificationToken) => {
     emailVerificationToken,
     tokenTypes.EMAIL_VERIFICATION
   );
-  const user = await getUserById(emailVerificationTokenDoc.userId);
+  const user = await User.findByPk(emailVerificationTokenDoc.userId);
   if (!user) {
     throw new Error("User not found");
   }

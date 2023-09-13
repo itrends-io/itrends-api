@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const { objectId, password } = require("./custom.validations");
+const { objectId, password, tokenRegex } = require("./custom.validations");
 
 const register = {
   body: Joi.object().keys({
@@ -58,16 +58,21 @@ const emailVerification = {
 
 const changePassword = {
   body: Joi.object().keys({
-    // email: Joi.string().email().required(),
     password: Joi.string().required().custom(password),
     new_password: Joi.string().required().custom(password),
     confirm_password: Joi.string().required().custom(password),
   }),
-  cookies: Joi.object()
-    .keys({
-      refreshToken: Joi.string().required(),
-    })
-    .unknown(true),
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+  // cookies: Joi.object()
+  //   .keys({
+  //     refreshToken: Joi.string().required(),
+  //   })
+  //   .unknown(true),
 };
 
 module.exports = {
