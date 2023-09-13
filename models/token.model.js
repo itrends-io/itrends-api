@@ -18,6 +18,7 @@ module.exports = (sequelize) => {
       validate: {
         isIn: [
           [
+            tokenTypes.ACCESS,
             tokenTypes.REFRESH,
             tokenTypes.RESET_PASSWORD,
             tokenTypes.EMAIL_VERIFICATION,

@@ -5,6 +5,7 @@ const catchAsync = require("../utils/catchAsync");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { googleOAuth } = require("../../config/passport");
+const { tokenTypes } = require("../../config/token");
 
 const registerUser = catchAsync(async (req, res) => {
   const user = await authService.registerUser(req.body);
@@ -55,11 +56,12 @@ const loginUserWithEmailAndPassword = catchAsync(async (req, res) => {
 });
 
 const changePassword = catchAsync(async (req, res) => {
-  const result = await authService.changePassword(
-    req.body,
-    req.cookies.refreshToken
-  );
-  res.status(httpStatus.ACCEPTED).send("Successfully changed passsword");
+  if (!req.headers.authorization) {
+    throw new Error("Token is required");
+  }
+  const [, token] = req.headers.authorization.split(" ");
+  const result = await authService.changePassword(req.body, token);
+  res.status(httpStatus.ACCEPTED).send("Successfully changed password");
 });
 
 const logoutUser = catchAsync(async (req, res) => {

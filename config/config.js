@@ -13,6 +13,7 @@ const envVarSchema = Joi.object()
     CLIENT_URL: Joi.string().allow("").default("https://itrends.io"),
     DATABASE_URL: Joi.string().required().description("PG Dev DB url"),
     LOCAL_DB: Joi.string().required().description("PG Demo DB url"),
+    MESSAGEBIRD_API_KEY: Joi.string().required().description("2FA SMS"),
     JWT_SECRET: Joi.string().required().description("JWT secret key"),
     JWT_ACCESS_EXPIRATION_MINUTES: Joi.number()
       .default(30)
@@ -41,6 +42,7 @@ if (error) {
 module.exports = {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
+  message_bird_key: envVars.MESSAGEBIRD_API_KEY,
   corsOrigin: envVars.NODE_ENV === "production" ? envVars.CLIENT_URL : "*",
   jwt: {
     secret: envVars.JWT_SECRET,
