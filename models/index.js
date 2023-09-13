@@ -1,12 +1,12 @@
 const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
+const config = require("../config/config");
 
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || "development";
 const db = {};
 
-const connectionString = process.env.LOCAL_DB;
+const connectionString = config.pg.url;
 
 const sequelize = new Sequelize(connectionString, {
   dialect: "postgres",

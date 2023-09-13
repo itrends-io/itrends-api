@@ -54,7 +54,7 @@ app.use(errorConverter);
 app.use(errorHandler);
 
 db.sequelize.sync().then((req) => {
-  logger.info("Connected to POSTGRES SERVER");
+  logger.info(`Connected to POSTGRES DB: ${config.pg.url}`);
   app.listen(config.port, () => {
     logger.info(`Listening to port ${config.port}`);
   });

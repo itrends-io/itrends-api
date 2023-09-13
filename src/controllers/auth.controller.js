@@ -49,6 +49,14 @@ const loginUserWithEmailAndPassword = catchAsync(async (req, res) => {
     .send({ user, token: tokens.access, message });
 });
 
+const changePassword = catchAsync(async (req, res) => {
+  const result = await authService.changePassword(
+    req.body,
+    req.cookies.refreshToken
+  );
+  res.status(httpStatus.ACCEPTED).send("Successfully changed passsword");
+});
+
 const logoutUser = catchAsync(async (req, res) => {
   await authService.logoutUser(req.cookies.refreshToken);
   res.status(httpStatus.NO_CONTENT).send("Successfully logged out");
@@ -64,7 +72,10 @@ const forgotPassword = catchAsync(async (req, res) => {
 });
 
 const resetPassword = catchAsync(async (req, res) => {
-  await authService.resetPassword(req.query.token, req.body.password);
+  await authService.resetPasswordFromEmailToken(
+    req.query.token,
+    req.body.password
+  );
   res.status(httpStatus.NO_CONTENT).send();
 });
 
@@ -84,6 +95,7 @@ const refreshTokens = catchAsync(async (req, res) => {
 
 const emailVerification = catchAsync(async (req, res) => {
   const user = await authService.emailVerification(req.query.token);
+  console.log("this is token:", req.query.token);
   res.send({ isEmailVerified: !!user.isEmailVerified });
 });
 
@@ -95,4 +107,5 @@ module.exports = {
   resetPassword,
   refreshTokens,
   emailVerification,
+  changePassword,
 };
