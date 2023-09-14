@@ -7,5 +7,13 @@ const { userController } = require("../controllers");
 module.exports = router;
 
 router
-  .route("/:userId")
+  .route("/self")
   .get(validate(userValidation.getOneUserByPk), userController.getUserByPk);
+
+router
+  .route("/")
+  .get(validate(userValidation.getOneUserByPk), userController.getUsers);
+
+  router
+    .route("/:userId")
+    .get(validate(userValidation.getOneUserByPk), userController.updateUserById);

@@ -3,10 +3,11 @@ const { authService, tokenService, emailService } = require("../services");
 const catchAsync = require("../utils/catchAsync");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
-const { tokenTypes } = require("../../config/token");
 
 const registerUser = catchAsync(async (req, res) => {
-  const user = await authService.registerUser(req.body);
+  const username = await authService.generateUsername();
+  const userbody = { ...req.body, username };
+  const user = await authService.registerUser(userbody);
   const tokens = await tokenService.generateAuthTokens(user);
   const message = "Successfully registered";
   const emailVerificationToken =
@@ -31,7 +32,16 @@ const registerUser = catchAsync(async (req, res) => {
       secure: true,
     })
     .status(httpStatus.CREATED)
-    .send({ user, token: tokens.access, message });
+    .send({
+      user: {
+        name: user.name,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+      },
+      token: tokens.access,
+      message,
+    });
 });
 
 const loginUserWithEmailAndPassword = catchAsync(async (req, res) => {
