@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const { DataTypes, Op } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
+const { Follower } = require("./models");
 
 module.exports = (sequelize) => {
   const User = sequelize.define("User", {
@@ -123,32 +124,29 @@ module.exports = (sequelize) => {
     return !!user;
   };
 
-  const UserFollowing = sequelize.define(
-    "UserFollowing",
-    {},
-    { timestamps: false }
-  );
-  const UserFollowers = sequelize.define(
-    "UserFollowers",
-    {},
-    { timestamps: false }
-  );
+  // const UserFollowing = sequelize.define(
+  //   "UserFollowing",
+  //   {},
+  //   { timestamps: false }
+  // );
+  // const UserFollowers = sequelize.define(
+  //   "UserFollowers",
+  //   {},
+  //   { timestamps: false }
+  // );
 
-  User.belongsToMany(User, {
-    as: "followers",
-    through: "UserFollowers",
-    foreignKey: "followerId",
+  User.hasMany(Follower, {
+    foreignKey: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
   });
 
-  User.belongsToMany(User, {
-    as: "following",
-    through: "UserFollowing",
-    foreignKey: "followingId",
-  });
+  Follower.belongsTo(User);
 
   User.sync();
-  UserFollowing.sync();
-  UserFollowers.sync();
+  // UserFollowing.sync();
+  // UserFollowers.sync();
 
   return User;
 };
