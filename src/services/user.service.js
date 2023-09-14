@@ -86,28 +86,6 @@ const updateUserById = async (userId, updateBody) => {
   }
 };
 
-const followUser = async (currUserId, token, followingId) => {
-  if (!token) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Ensure you are logged in");
-  }
-  const [, accessToken] = token.split(" ");
-  const currUser = await getUserById(currUserId, accessToken);
-  const userToFollow = await User.findByPk(followingId);
-  if (!userToFollow) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
-  }
-
-  const isFollowing = await currUser.hasFollowing(userToFollow);
-  console.log(isFollowing);
-  if (isFollowing) {
-    throw new ApiError(httpStatus.NOT_MODIFIED, "Already following this user");
-  }
-
-  await currUser.addFollowing(userToFollow);
-  await currUser.increment("followingCount");
-  await userToFollow.increment("followersCount");
-};
-
 const unFollowUser = async (currUserId, token, followingId) => {
   if (!token) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Ensure you are logged in");
@@ -137,6 +115,5 @@ module.exports = {
   updateUserById,
   getAllUsers,
   getUserByUsername,
-  followUser,
   unFollowUser,
 };
