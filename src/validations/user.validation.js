@@ -10,6 +10,20 @@ const getOneUserByPk = {
   }),
 };
 
+const followUserByPk = {
+  body: Joi.object().keys({
+    followingId: Joi.string().required(),
+  }),
+};
+
+const unFollowUserByPk = {
+  body: Joi.object().keys({
+    unFollowId: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   getOneUserByPk,
+  followUserByPk,
+  unFollowUserByPk,
 };
