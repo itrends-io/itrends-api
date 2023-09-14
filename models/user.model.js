@@ -1,7 +1,6 @@
 const bcrypt = require("bcryptjs");
 const { DataTypes, Op } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
-const { Follower } = require("./models");
 
 module.exports = (sequelize) => {
   const User = sequelize.define("User", {
@@ -75,19 +74,11 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: true,
       trim: true,
-      // validate: {
-      //   isPhoneNumber(value) {
-      //     if (!/^\d{10}$/.test(value)) {
-      //       throw new Error("Invalid phone number format");
-      //     }
-      //   },
-      // },
     },
     twoFactorSecret: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-
     isTwoFactorEnabled: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
@@ -124,29 +115,6 @@ module.exports = (sequelize) => {
     return !!user;
   };
 
-  // const UserFollowing = sequelize.define(
-  //   "UserFollowing",
-  //   {},
-  //   { timestamps: false }
-  // );
-  // const UserFollowers = sequelize.define(
-  //   "UserFollowers",
-  //   {},
-  //   { timestamps: false }
-  // );
-
-  User.hasMany(Follower, {
-    foreignKey: {
-      type: DataTypes.UUID,
-      allowNull: false,
-    },
-  });
-
-  Follower.belongsTo(User);
-
   User.sync();
-  // UserFollowing.sync();
-  // UserFollowers.sync();
-
   return User;
 };
