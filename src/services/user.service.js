@@ -86,28 +86,6 @@ const updateUserById = async (userId, updateBody) => {
   }
 };
 
-const unFollowUser = async (currUserId, token, followingId) => {
-  if (!token) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Ensure you are logged in");
-  }
-  const [, accessToken] = token.split(" ");
-  const currUser = await getUserById(currUserId, accessToken);
-  const userToUnFollow = await User.findByPk(followingId);
-  if (!userToUnFollow) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
-  }
-  const isFollowing = await currUser.hasFollowing(userToUnFollow);
-  if (!isFollowing) {
-    throw new ApiError(
-      httpStatus.NOT_MODIFIED,
-      "You are not following this user"
-    );
-  }
-  await currUser.removeFollowing(userToUnFollow);
-  await currentUser.decrement("followingCount");
-  await userToUnfollow.decrement("followersCount");
-};
-
 module.exports = {
   getUserById,
   getSelf,
@@ -115,5 +93,4 @@ module.exports = {
   updateUserById,
   getAllUsers,
   getUserByUsername,
-  unFollowUser,
 };

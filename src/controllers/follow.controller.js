@@ -15,6 +15,18 @@ const followUser = catchAsync(async (req, res) => {
     .send({ data: data, message: "you are now following" });
 });
 
+const unFollowUser = catchAsync(async (req, res) => {
+  const data = await followService.followUser(
+    req.params.userId,
+    req.headers.authorization,
+    req.body.unFollowId
+  );
+  res
+    .status(httpStatus.ACCEPTED)
+    .send({ data: data, message: "you are now following" });
+});
+
 module.exports = {
   followUser,
+  unFollowUser,
 };

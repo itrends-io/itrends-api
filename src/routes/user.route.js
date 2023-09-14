@@ -24,5 +24,5 @@ router
   .route("/:userId/unfollow")
   .delete(
     validate(userValidation.unFollowUserByPk),
-    userController.unFollowUser
+    followController.unFollowUser
   );
