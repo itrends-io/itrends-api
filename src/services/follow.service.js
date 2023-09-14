@@ -11,8 +11,6 @@ User.hasMany(Follower, {
   as: "follower",
 });
 
-// Follower.belongsTo(User);
-
 const followUser = async (currUserId, token, userToFollowId) => {
   if (!token) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Ensure you are logged in");
@@ -65,8 +63,10 @@ const unFollowUser = async (currUserId, token, userToFollowId) => {
     throw new ApiError(httpStatus.BAD_REQUEST, "Not following this user");
   }
   const unFollow = await Follower.destroy({
-    followerId: currUser.id,
-    followingId: userToFollow.id,
+    where: {
+      followerId: currUser.id,
+      followingId: userToFollow.id,
+    },
   });
 
   await currUser.decrement("followingCount");

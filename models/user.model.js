@@ -114,16 +114,6 @@ module.exports = (sequelize) => {
     });
     return !!user;
   };
-  // User.belongsToMany(User, {
-  //   as: "follower",
-  //   through: "Follower",
-  //   foreignKey: "followerId",
-  // });
-  // User.belongsToMany(User, {
-  //   as: "following",
-  //   through: "Following",
-  //   foreignKey: "followingId",
-  // });
 
   User.sync();
   return User;
