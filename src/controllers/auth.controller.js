@@ -1,9 +1,11 @@
 const httpStatus = require("http-status");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const { authService, tokenService, emailService } = require("../services");
 const catchAsync = require("../utils/catchAsync");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
-
+const { googleOAuth } = require("../../config/passport");
+const { tokenTypes } = require("../../config/token");
 const registerUser = catchAsync(async (req, res) => {
   const username = await authService.generateUsername();
   const userbody = { ...req.body, username };
@@ -43,6 +45,10 @@ const registerUser = catchAsync(async (req, res) => {
       message,
     });
 });
+
+const googleOauth = (passport) => {
+  googleOAuth(passport);
+};
 
 const loginUserWithEmailAndPassword = catchAsync(async (req, res) => {
   const { email, password } = req.body;
@@ -112,6 +118,7 @@ const emailVerification = catchAsync(async (req, res) => {
 
 module.exports = {
   registerUser,
+  googleOauth,
   loginUserWithEmailAndPassword,
   logoutUser,
   forgotPassword,

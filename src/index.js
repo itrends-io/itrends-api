@@ -6,6 +6,8 @@ const httpStatus = require("http-status");
 const cookieParser = require("cookie-parser");
 const config = require("../config/config");
 const routes = require("./routes");
+const session = require("express-session");
+const passport = require("passport");
 const {
   errorConverter,
   errorHandler,
@@ -20,6 +22,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(xss());
 app.use(cookieParser());
+
+app.use(
+  session({
+    secret: "your-secret-key",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+// Passport middelware
+app.use(passport.initialize());
+app.use(passport.session());
 
 const corsConfig = {
   origin: config.corsOrigin,
