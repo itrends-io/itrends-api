@@ -83,22 +83,22 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: true,
       trim: true,
-      // validate: {
-      //   isPhoneNumber(value) {
-      //     if (!/^\d{10}$/.test(value)) {
-      //       throw new Error("Invalid phone number format");
-      //     }
-      //   },
-      // },
     },
     twoFactorSecret: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-
     isTwoFactorEnabled: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+    },
+    followersCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+    followingCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
   });
 
@@ -125,6 +125,5 @@ module.exports = (sequelize) => {
   };
 
   User.sync();
-
   return User;
 };

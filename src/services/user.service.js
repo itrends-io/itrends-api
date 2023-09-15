@@ -5,6 +5,24 @@ const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
 const { verifyToken } = require("./token.service");
 
+const getSelf = async (accessToken) => {
+  if (!accessToken) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Token is required");
+  }
+  const getUserTokenDoc = await Token.findOne({
+    where: {
+      token: accessToken,
+      type: tokenTypes.ACCESS,
+    },
+  });
+  logger.info(getUserTokenDoc);
+  if (!getUserTokenDoc) {
+    throw new Error("Invalid or expired access token");
+  }
+  const user = await User.findByPk(getUserTokenDoc.userId);
+  return user;
+};
+
 const getUserById = async (userId, accessToken) => {
   if (!accessToken) {
     throw new ApiError(httpStatus.NOT_FOUND, "Token is required");
@@ -19,18 +37,38 @@ const getUserById = async (userId, accessToken) => {
   if (!getUserTokenDoc) {
     throw new Error("Invalid or expired access token");
   }
+  const user = await User.findByPk(userId);
+  return user;
+};
 
-  if (getUserTokenDoc.userId != userId) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Token not match user");
+const getAllUsers = async (accessToken) => {
+  if (!accessToken) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Token is required");
+  }
+  const getUserTokenDoc = await Token.findOne({
+    where: {
+      token: accessToken,
+      type: tokenTypes.ACCESS,
+    },
+  });
+  logger.info(getUserTokenDoc);
+  if (!getUserTokenDoc) {
+    throw new Error("Invalid or expired access token");
   }
 
-  const user = await User.findByPk(getUserTokenDoc.userId);
-  return user;
+  const users = await User.findAll();
+  return users;
 };
 
 const getUserByEmail = async (email) => {
   return User.findOne({
     where: { email: email },
+  });
+};
+
+const getUserByUsername = async (username) => {
+  return User.findOne({
+    where: { username: username },
   });
 };
 
@@ -50,6 +88,9 @@ const updateUserById = async (userId, updateBody) => {
 
 module.exports = {
   getUserById,
+  getSelf,
   getUserByEmail,
   updateUserById,
+  getAllUsers,
+  getUserByUsername,
 };
