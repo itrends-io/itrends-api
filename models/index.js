@@ -12,9 +12,9 @@ const sequelize = new Sequelize(connectionString, {
   dialect: "postgres",
   protocol: "postgres",
   dialectOptions: {
-    // ssl: {
-    //   rejectUnauthorized: false,
-    // },
+    ssl: {
+      rejectUnauthorized: false,
+    },
   },
 });
 
