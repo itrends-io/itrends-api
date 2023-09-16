@@ -12,8 +12,8 @@ const envVarSchema = Joi.object()
     PORT: Joi.number().default(8005),
     CLIENT_URL: Joi.string().allow("").default("https://itrends.io"),
     DATABASE_URL: Joi.string().required().description("PG Dev DB url"),
-    LOCAL_DB: Joi.string().required().description("PG Demo DB url"),
-    MESSAGEBIRD_API_KEY: Joi.string().required().description("2FA SMS"),
+    LOCAL_DB: Joi.string().description("PG Demo DB url"),
+    MESSAGEBIRD_API_KEY: Joi.string().description("2FA SMS"),
     JWT_SECRET: Joi.string().required().description("JWT secret key"),
     JWT_ACCESS_EXPIRATION_MINUTES: Joi.number()
       .default(30)
