@@ -12,8 +12,17 @@ const createNewConversation = async (data) => {
     receiverId: data.receiverId,
   });
 
-  console.log(conversationData);
+  // console.log(conversationData);
   return conversationData;
 };
 
-module.exports = { createNewConversation };
+const getCurrentUsersConversations = async (data) => {
+  const conversationData = await Conversation.findAll({
+    where: {
+      senderId: data,
+    },
+  });
+  return conversationData;
+};
+
+module.exports = { createNewConversation, getCurrentUsersConversations };

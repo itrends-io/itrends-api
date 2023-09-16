@@ -18,4 +18,15 @@ const createConversation = catchAsync(async (req, res) => {
     .send({ data: "", message: "Conversation created" });
 });
 
-module.exports = { createConversation };
+const getCurrentUsersConversations = catchAsync(async (req, res) => {
+  const data = await conversationService.getCurrentUsersConversations(
+    req.params.id
+  );
+
+  console.log(data);
+  res
+    .status(httpStatus.CREATED)
+    .send({ data: data, message: "Conversation generated" });
+});
+
+module.exports = { createConversation, getCurrentUsersConversations };

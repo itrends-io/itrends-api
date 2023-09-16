@@ -11,3 +11,7 @@ const {
 module.exports = router;
 
 router.route("/conversation").post(conversationController.createConversation);
+
+router
+  .route("/:id/conversation")
+  .get(conversationController.getCurrentUsersConversations);
