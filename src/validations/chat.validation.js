@@ -22,7 +22,15 @@ const get_current_conversation = {
   }),
 };
 
+const create_message = {
+  body: Joi.object().keys({
+    conversationId: Joi.string().required(),
+    message: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   createConversation,
   get_current_conversation,
+  create_message,
 };

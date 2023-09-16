@@ -11,6 +11,10 @@ module.exports = (sequelize) => {
     message: {
       type: DataTypes.STRING,
     },
+    read_status: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   });
   return Message;
 };
