@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const validate = require("../middlewares/validate");
-const { userValidation } = require("../validations");
+const { userValidation, conversationValidation } = require("../validations");
 const {
   userController,
   followController,
@@ -10,8 +10,16 @@ const {
 
 module.exports = router;
 
-router.route("/conversation").post(conversationController.createConversation);
+router
+  .route("/conversation")
+  .post(
+    validate(conversationValidation.createConversation),
+    conversationController.createConversation
+  );
 
 router
-  .route("/:id/conversation")
-  .get(conversationController.getCurrentUsersConversations);
+  .route("/conversation")
+  .get(
+    validate(conversationValidation.get_current_conversation),
+    conversationController.getCurrentUsersConversations
+  );
