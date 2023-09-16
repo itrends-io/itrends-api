@@ -24,7 +24,7 @@ const get_current_conversation = {
 
 const create_message = {
   body: Joi.object().keys({
-    conversationId: Joi.string().required(),
+    conversation_id: Joi.string().required(),
     message: Joi.string().required(),
   }),
 };

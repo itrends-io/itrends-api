@@ -143,36 +143,6 @@ const getCurrentUsersConversations = async (access_token) => {
   }
 
   return selectedConversations;
-
-  // const friend_data = await User.findByPk(conversation_data.receiverId);
-  // const user_data = await User.findByPk(conversation_data.senderId);
-
-  // console.log(friend_data);
-
-  // const selected_user_data = {
-  //   id: user_data.id,
-  //   name: user_data.name,
-  //   email: user_data.email,
-  //   username: user_data.username,
-  // };
-  // const selected_friend_data = {
-  //   id: friend_data.id,
-  //   name: friend_data.name,
-  //   email: friend_data.email,
-  //   username: friend_data.username,
-  // };
-
-  // const selected_conversation_data = {
-  //   conversation_id: conversation_data.id,
-  //   created_at: conversation_data.createdAt,
-  //   updated_at: conversation_data.updatedAt,
-  // };
-
-  // return {
-  //   selected_user_data,
-  //   selected_friend_data,
-  //   selected_conversation_data,
-  // };
 };
 
 module.exports = { createNewConversation, getCurrentUsersConversations };

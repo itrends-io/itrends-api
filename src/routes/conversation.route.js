@@ -6,6 +6,7 @@ const {
   userController,
   followController,
   conversationController,
+  messageController,
 } = require("../controllers");
 
 module.exports = router;
@@ -22,4 +23,11 @@ router
   .get(
     validate(conversationValidation.get_current_conversation),
     conversationController.getCurrentUsersConversations
+  );
+
+router
+  .route("/message")
+  .post(
+    validate(conversationValidation.create_message),
+    messageController.create_message
   );
