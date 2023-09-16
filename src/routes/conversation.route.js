@@ -30,4 +30,8 @@ router
   .post(
     validate(conversationValidation.create_message),
     messageController.create_message
+  )
+  .get(
+    validate(conversationValidation.get_messages),
+    messageController.get_messages
   );

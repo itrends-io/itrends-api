@@ -34,4 +34,23 @@ const create_message = async (access_token, message_body) => {
   return message;
 };
 
-module.exports = { create_message };
+const get_messages = async (access_token, body) => {
+  const get_user_token_doc = await Token.findOne({
+    where: {
+      token: access_token,
+      type: tokenTypes.ACCESS,
+    },
+  });
+  if (!get_user_token_doc) {
+    throw new Error("Invalid or expired access token");
+  }
+
+  const messages = await Message.findAll({
+    where: {
+      conversationId: body.conversation_id,
+    },
+  });
+  return messages;
+};
+
+module.exports = { create_message, get_messages };

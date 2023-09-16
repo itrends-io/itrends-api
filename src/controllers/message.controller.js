@@ -21,4 +21,16 @@ const create_message = catchAsync(async (req, res) => {
   });
 });
 
-module.exports = { create_message };
+const get_messages = catchAsync(async (req, res) => {
+  if (!req.headers.authorization) {
+    throw new Error("Token is required");
+  }
+  const [, token] = req.headers.authorization.split(" ");
+  const data = await messageService.get_messages(token, req.body);
+  res.status(httpStatus.CREATED).send({
+    data: data,
+    message: "Message sent",
+  });
+});
+
+module.exports = { create_message, get_messages };

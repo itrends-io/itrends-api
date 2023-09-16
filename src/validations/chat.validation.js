@@ -29,8 +29,15 @@ const create_message = {
   }),
 };
 
+const get_messages = {
+  body: Joi.object().keys({
+    conversation_id: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   createConversation,
   get_current_conversation,
   create_message,
+  get_messages,
 };
