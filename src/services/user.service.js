@@ -4,7 +4,7 @@ const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
 const { verifyToken } = require("./token.service");
-const cloudinary = require("cloudinary");
+const cloudinary = require("../utils/Cloudinary");
 
 const getSelf = async (accessToken) => {
   if (!accessToken) {
@@ -87,8 +87,52 @@ const updateUserById = async (userId, updateBody) => {
   }
 };
 
-const uploadImage = async (files) => {
-  return await cloudinary.uploader.upload(req.file.path);
+const uploadImages = async (files) => {
+  const imageMappings = {
+    profile_photo: "profile_photo",
+    cover_photo: "cover_photo",
+  };
+  const updatedUserData = {};
+
+  const uploadPromises = [];
+  for (const file of files) {
+    const fieldName = file.fieldname.trim();
+    const mappedField = imageMappings[fieldName];
+    if (mappedField) {
+      uploadPromises.push(
+        new Promise((resolve, reject) => {
+          cloudinary.uploader.upload(file.path, (err, result) => {
+            if (err) {
+              console.error("error");
+              reject(err);
+            } else {
+              console.log("success");
+              updatedUserData[mappedField] = result.secure_url;
+              resolve();
+            }
+          });
+        })
+      );
+    }
+  }
+
+  await Promise.all(uploadPromises);
+  return updatedUserData;
+};
+
+const getUserInfo = async (query, token) => {
+  const { id, email, username } = query;
+  let user;
+  if (id) {
+    user = await getUserById(id, token);
+  } else if (email) {
+    user = await getUserByEmail(email);
+  } else if (username) {
+    user = await getUserByUsername(username);
+  } else {
+    const users = await getAllUsers(token);
+  }
+  return user;
 };
 
 module.exports = {
@@ -98,4 +142,6 @@ module.exports = {
   updateUserById,
   getAllUsers,
   getUserByUsername,
+  uploadImages,
+  getUserInfo,
 };
