@@ -3,6 +3,8 @@ const router = express.Router();
 const validate = require("../middlewares/validate");
 const { userValidation } = require("../validations");
 const { userController, followController } = require("../controllers");
+const upload = require("../utils/multer");
+const cloudinary = require("../utils/Cloudinary");
 
 module.exports = router;
 
@@ -16,7 +18,11 @@ router
 
 router
   .route("/:userId")
-  .get(validate(userValidation.getOneUserByPk), userController.updateUserById);
+  .put(
+    validate(userValidation.getOneUserByPk),
+    upload.any(),
+    userController.updateUserById
+  );
 router
   .route("/:userId/follow")
   .post(validate(userValidation.followUserByPk), followController.followUser);

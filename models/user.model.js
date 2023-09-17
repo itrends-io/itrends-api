@@ -4,6 +4,11 @@ const { v4: uuidv4 } = require("uuid");
 
 module.exports = (sequelize) => {
   const User = sequelize.define("User", {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: uuidv4(),
+      primaryKey: true,
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -13,14 +18,19 @@ module.exports = (sequelize) => {
         len: [4, 40],
       },
     },
-    twitterId: {
+    twitter_id: {
       type: DataTypes.STRING,
     },
-    ouathGoogle: {
+    ouath_google: {
       type: DataTypes.STRING,
     },
-    profilePhoto: {
+    profile_photo: {
       type: DataTypes.STRING,
+      defaultValue: null,
+    },
+    cover_photo: {
+      type: DataTypes.STRING,
+      defaultValue: null,
     },
     username: {
       type: DataTypes.STRING,
@@ -38,7 +48,7 @@ module.exports = (sequelize) => {
         isEmail: true,
       },
     },
-    isEmailVerified: {
+    is_email_verified: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
@@ -60,43 +70,48 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(1000),
       allowNull: true,
       trim: true,
+      // profilePhoto,
+      defaultValue: null,
     },
     location: {
       type: DataTypes.STRING(64),
       allowNull: true,
       trim: true,
+      defaultValue: null,
     },
     website: {
       type: DataTypes.STRING(100),
       allowNull: true,
       trim: true,
+      defaultValue: null,
       validate: {
         isURL: true,
       },
     },
     amazon_wishlist: {
       type: DataTypes.STRING(100),
+      defaultValue: null,
       allowNull: true,
       trim: true,
     },
-    phoneNumber: {
+    phone_number: {
       type: DataTypes.STRING,
       allowNull: true,
       trim: true,
     },
-    twoFactorSecret: {
+    two_factor_secret: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    isTwoFactorEnabled: {
+    is_two_factor_enabled: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    followersCount: {
+    followers_count: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
-    followingCount: {
+    following_count: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },

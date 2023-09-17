@@ -4,6 +4,7 @@ const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
 const { verifyToken } = require("./token.service");
+const cloudinary = require("cloudinary");
 
 const getSelf = async (accessToken) => {
   if (!accessToken) {
@@ -84,6 +85,10 @@ const updateUserById = async (userId, updateBody) => {
   } catch (error) {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "User update failed");
   }
+};
+
+const uploadImage = async (files) => {
+  return await cloudinary.uploader.upload(req.file.path);
 };
 
 module.exports = {

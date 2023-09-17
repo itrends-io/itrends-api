@@ -3,6 +3,7 @@ const { userService, tokenService, emailService } = require("../services");
 const catchAsync = require("../utils/catchAsync");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
+const cloudinary = require("../utils/Cloudinary");
 
 const getUserByPk = catchAsync(async (req, res) => {
   if (!req.headers.authorization) {
@@ -35,10 +36,61 @@ const getUsers = catchAsync(async (req, res) => {
   }
 });
 
+// const updateUserById = catchAsync(async (req, res) => {
+//   req.files.map((e) => {
+//     switch (e.fieldname) {
+//       case "profile_picture":
+//         newUser.image = e.filename;
+//         break;
+//     }
+//   });
+//   const { userId } = req.params;
+//   const updateFields = req.body;
+//   const user = await userService.updateUserById(userId, updateFields);
+//   const message = "User updated successfully";
+//   res.status(httpStatus.ACCEPTED).send({
+//     message,
+//     user,
+//   });
+// });
+
 const updateUserById = catchAsync(async (req, res) => {
   const { userId } = req.params;
   const updateFields = req.body;
-  const user = await userService.updateUserById(userId, updateFields);
+  const imageMappings = {
+    profile_picture: "profile_picture",
+    cover_photo: "cover_photo",
+  };
+  const updatedUserData = {};
+
+  const uploadPromises = [];
+  req.files.forEach((file) => {
+    const fieldName = file.fieldname;
+    const mappedField = imageMappings[fieldName];
+    if (mappedField) {
+      uploadPromises.push(
+        new Promise((resolve, reject) => {
+          cloudinary.uploader.upload(file.path, (err, result) => {
+            if (err) {
+              console.error(err);
+              reject(err);
+            } else {
+              updatedUserData[mappedField] = result.secure_url;
+              resolve();
+            }
+          });
+        })
+      );
+    }
+  });
+  await Promise.all(uploadPromises);
+  const mergedUpdateFields = {
+    ...updateFields,
+    ...updatedUserData,
+  };
+
+  const user = await userService.updateUserById(userId, mergedUpdateFields);
+
   const message = "User updated successfully";
   res.status(httpStatus.ACCEPTED).send({
     message,
