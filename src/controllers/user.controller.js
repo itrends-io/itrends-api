@@ -1,8 +1,9 @@
 const httpStatus = require("http-status");
-const { userService, tokenService, emailService } = require("../services");
+const { userService, tokenService, emailService, authService } = require("../services");
 const catchAsync = require("../utils/catchAsync");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
+const cloudinary = require("../utils/Cloudinary");
 
 const getUserByPk = catchAsync(async (req, res) => {
   if (!req.headers.authorization) {
@@ -10,35 +11,44 @@ const getUserByPk = catchAsync(async (req, res) => {
   }
   const [, token] = req.headers.authorization.split(" ");
   const user = await userService.getSelf(token);
-  res.status(httpStatus.ACCEPTED).send({ user, message: "" });
+  const userData = await authService.generateUserData(user);
+  res.status(httpStatus.ACCEPTED).send({ user: userData, message: "" });
 });
 
 const getUsers = catchAsync(async (req, res) => {
-  const { id, email, username } = req.query;
-  let user;
+  console.log(req.headers.authorization);
   if (!req.headers.authorization) {
     throw new Error("Token is required");
   }
   const [, token] = req.headers.authorization.split(" ");
-  if (id) {
-    user = await userService.getUserById(id, token);
-    res.status(httpStatus.ACCEPTED).send({ user, message: "success" });
-  } else if (email) {
-    user = await userService.getUserByEmail(email);
-    res.status(httpStatus.ACCEPTED).send({ user, message: "success" });
-  } else if (username) {
-    user = await userService.getUserByUsername(username);
-    res.status(httpStatus.ACCEPTED).send({ user, message: "success" });
-  } else {
-    const users = await userService.getAllUsers(token);
-    res.status(httpStatus.ACCEPTED).send({ users, message: "success" });
+  const user = await userService.getUserInfo(req.query, token);
+  const userData = await authService.generateUserData(user);
+  res.status(httpStatus.ACCEPTED).send({ user: userData, message: "success" });
+});
+
+const getAllUsers = catchAsync(async (req, res) => {
+  const { id, email, username } = req.query;
+  if (!req.headers.authorization) {
+    throw new Error("Token is required");
   }
+  const [, token] = req.headers.authorization.split(" ");
+  const users = await userService.getAllUsers(token);
+  res.status(httpStatus.ACCEPTED).send({ users, message: "success" });
 });
 
 const updateUserById = catchAsync(async (req, res) => {
   const { userId } = req.params;
   const updateFields = req.body;
-  const user = await userService.updateUserById(userId, updateFields);
+
+  const updatedUserData = await userService.uploadImages(req.files);
+
+  const mergedUpdateFields = {
+    ...updateFields,
+    ...updatedUserData,
+  };
+
+  const user = await userService.updateUserById(userId, mergedUpdateFields);
+
   const message = "User updated successfully";
   res.status(httpStatus.ACCEPTED).send({
     message,
@@ -47,6 +57,7 @@ const updateUserById = catchAsync(async (req, res) => {
 });
 
 module.exports = {
+  getAllUsers,
   getUserByPk,
   getUsers,
   updateUserById,

@@ -13,10 +13,10 @@ const googleOAuth = (passport) => {
       },
       async (accessToken, refreshToken, profile, done) => {
         const newUser = {
-          ouathGoogle: profile.id,
+          ouath_google: profile.id,
           name: profile.displayName,
           email: profile.emails[0].value,
-          profileImage: profile.photos[0].value,
+          profile_photo: profile.photos[0].value,
           password: process.env.OAUTH_RANDOM_PASSWORD,
         };
 
@@ -55,14 +55,12 @@ const twitterOAuth = (passport) => {
       },
       async (accessToken, refreshToken, profile, done) => {
         const newUser = {
-          twitterId: profile.id,
+          twitter_id: profile.id,
           name: profile.name,
           email: "",
           profileImage: profile.photos[0].value,
           password: "98nrjegbfd8u@8782*&#@6g2vd",
         };
-
-        console.log(profile);
         done(null, profile);
 
         // try {
