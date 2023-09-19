@@ -2,10 +2,10 @@ const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   const Message = sequelize.define("Message", {
-    conversationId: {
+    conversation_id: {
       type: DataTypes.INTEGER,
     },
-    senderId: {
+    sender_id: {
       type: DataTypes.INTEGER,
     },
     message: {

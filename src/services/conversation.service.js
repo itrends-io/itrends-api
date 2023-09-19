@@ -6,16 +6,20 @@ const {
   Message,
   Token,
 } = require("../../models");
+const { DataTypes } = require("sequelize");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
 const { verifyToken } = require("./token.service");
 const { getUserById } = require("./user.service");
 
-// Conversation.hasMany(Message, {
-//   foreignKey: "messageId",
-//   as: "message",
-// });
+Conversation.hasMany(Message, {
+  foreignKey: "message_id",
+  as: "message",
+  primaryKey: true,
+  unique: true,
+  defaultValue: DataTypes.UUIDV4,
+});
 
 const createNewConversation = async (friendId, accessToken) => {
   const get_user_token_doc = await Token.findOne({
@@ -73,7 +77,7 @@ const createNewConversation = async (friendId, accessToken) => {
   };
 
   const selected_conversation_data = {
-    conversation_id: conversation_data.id,
+    conversation_id: conversation_data.conversation_id,
     created_at: conversation_data.createdAt,
     updated_at: conversation_data.updatedAt,
   };
