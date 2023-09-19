@@ -18,7 +18,7 @@ router
   .route("/:userId")
   .get(validate(userValidation.getOneUserByPk), userController.updateUserById);
 router
-  .route("/:userId/follow")
+  .route("/follow")
   .post(validate(userValidation.followUserByPk), followController.followUser);
 router
   .route("/:userId/unfollow")
