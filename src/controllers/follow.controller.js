@@ -14,9 +14,8 @@ const followUser = catchAsync(async (req, res) => {
 
 const unFollowUser = catchAsync(async (req, res) => {
   const data = await followService.unFollowUser(
-    req.params.userId,
     req.headers.authorization,
-    req.body.unFollowId
+    req.body.un_follow_id
   );
   res.status(httpStatus.ACCEPTED).send({ data: "", message: "You unfollowed" });
 });

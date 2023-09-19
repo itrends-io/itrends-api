@@ -18,7 +18,7 @@ const followUserByPk = {
 
 const unFollowUserByPk = {
   body: Joi.object().keys({
-    unFollowId: Joi.string().required(),
+    un_follow_id: Joi.string().required(),
   }),
 };
 
