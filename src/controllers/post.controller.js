@@ -6,7 +6,6 @@ const logger = require("../../config/logger");
 
 const createPost = catchAsync(async (req, res) => {
   const data = await postService.createPost(
-    req.params.userId,
     req.headers.authorization,
     req.body.post
   );
