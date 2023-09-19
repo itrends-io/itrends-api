@@ -6,10 +6,9 @@ const { tokenTypes } = require("../../config/token");
 const { verifyToken } = require("./token.service");
 const { getUserById } = require("./user.service");
 
-Post.belongsTo(User, {
-  foreignKey: "userId",
-  as: "userPost",
-});
+// Post.belongsTo(User, {
+//   foreignKey: "userId",
+// });
 
 const createPost = async (currUserId, token, post) => {
   if (!token) {
