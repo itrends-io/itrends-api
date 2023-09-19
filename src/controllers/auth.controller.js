@@ -6,6 +6,7 @@ const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { googleOAuth } = require("../../config/passport");
 const { tokenTypes } = require("../../config/token");
+
 const registerUser = catchAsync(async (req, res) => {
   const username = await authService.generateUsername();
   const userbody = { ...req.body, username };
