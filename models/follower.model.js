@@ -7,5 +7,6 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
   });
+
   return Follower;
 };

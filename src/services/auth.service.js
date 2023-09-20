@@ -1,5 +1,5 @@
 const httpStatus = require("http-status");
-const { User, Token } = require("../../models");
+const { User, Post, Token } = require("../../models");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
