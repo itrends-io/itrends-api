@@ -40,6 +40,7 @@ const registerUser = catchAsync(async (req, res) => {
       user: userData,
       token: tokens.access,
       message,
+      user,
     });
 });
 

@@ -10,6 +10,7 @@ const envVarSchema = Joi.object()
       .valid("production", "development", "demo")
       .required(),
     PORT: Joi.number().default(8005),
+    SOCKETPORT: Joi.number().default(8500),
     CLIENT_URL: Joi.string().allow("").default("https://itrends.io"),
     DATABASE_URL: Joi.string().required().description("PG Dev DB url"),
     LOCAL_DB: Joi.string().description("PG Demo DB url"),
@@ -42,6 +43,7 @@ if (error) {
 module.exports = {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
+  socketport: envVars.SOCKETPORT,
   message_bird_key: envVars.MESSAGEBIRD_API_KEY,
   corsOrigin: envVars.NODE_ENV === "production" ? envVars.CLIENT_URL : "*",
   jwt: {

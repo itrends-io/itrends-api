@@ -34,7 +34,7 @@ const getUserById = async (userId, accessToken) => {
       type: tokenTypes.ACCESS,
     },
   });
-  logger.info(getUserTokenDoc);
+
   if (!getUserTokenDoc) {
     throw new Error("Invalid or expired access token");
   }

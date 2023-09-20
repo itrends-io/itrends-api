@@ -12,13 +12,13 @@ const getOneUserByPk = {
 
 const followUserByPk = {
   body: Joi.object().keys({
-    followingId: Joi.string().required(),
+    following_id: Joi.string().required(),
   }),
 };
 
 const unFollowUserByPk = {
   body: Joi.object().keys({
-    unFollowId: Joi.string().required(),
+    un_follow_id: Joi.string().required(),
   }),
 };
 

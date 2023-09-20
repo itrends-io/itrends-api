@@ -13,3 +13,16 @@ router
 router
   .route("/")
   .get(validate(userValidation.getOneUserByPk), userController.getUsers);
+
+router
+  .route("/:userId")
+  .get(validate(userValidation.getOneUserByPk), userController.updateUserById);
+router
+  .route("/follow")
+  .post(validate(userValidation.followUserByPk), followController.followUser);
+router
+  .route("/unfollow")
+  .delete(
+    validate(userValidation.unFollowUserByPk),
+    followController.unFollowUser
+  );
