@@ -1,9 +1,9 @@
 const Joi = require("joi");
 const { objectId, password, tokenRegex } = require("./custom.validations");
 
-const createConversation = {
+const createChat = {
   body: Joi.object().keys({
-    friendId: Joi.string().required(),
+    friend_id: Joi.string().required(),
   }),
   headers: Joi.object().keys({
     authorization: Joi.string()
@@ -36,7 +36,7 @@ const get_messages = {
 };
 
 module.exports = {
-  createConversation,
+  createChat,
   get_current_conversation,
   create_message,
   get_messages,

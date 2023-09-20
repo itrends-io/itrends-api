@@ -1,11 +1,5 @@
 const httpStatus = require("http-status");
-const {
-  User,
-  Conversation,
-  Follower,
-  Message,
-  Token,
-} = require("../../models");
+const { User, Chat, Follower, Message, Token } = require("../../models");
 const { DataTypes } = require("sequelize");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
@@ -13,7 +7,7 @@ const { tokenTypes } = require("../../config/token");
 const { verifyToken } = require("./token.service");
 const { getUserById } = require("./user.service");
 
-Conversation.hasMany(Message, {
+Chat.hasMany(Message, {
   foreignKey: "message_id",
   as: "message",
   primaryKey: true,
@@ -21,7 +15,7 @@ Conversation.hasMany(Message, {
   defaultValue: DataTypes.UUIDV4,
 });
 
-const createNewConversation = async (friendId, accessToken) => {
+const createNewChat = async (friend_id, accessToken) => {
   const get_user_token_doc = await Token.findOne({
     where: {
       token: accessToken,
@@ -33,63 +27,60 @@ const createNewConversation = async (friendId, accessToken) => {
   }
 
   const user_data = await User.findByPk(get_user_token_doc.userId);
-  const friend_data = await User.findByPk(friendId);
+  const friend_data = await User.findByPk(friend_id);
   if (!friend_data) {
     throw new Error("User not found");
   }
 
-  const is_already_conversing = await Conversation.findOne({
+  const is_already_conversing = await Chat.findOne({
     where: {
-      senderId: user_data.id,
-      receiverId: friend_data.id,
+      sender_id: user_data.user_id,
+      receiver_id: friend_data.user_id,
     },
   });
 
   if (is_already_conversing) {
-    throw new ApiError(
-      httpStatus.BAD_REQUEST,
-      "Already have a conversation this user"
-    );
+    throw new ApiError(httpStatus.BAD_REQUEST, "Already have a chat this user");
   }
 
-  if (friend_data.id === user_data.id) {
+  if (friend_data.id === user_data.user_id) {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
-      "Cannot create a conversation with yourself"
+      "Cannot create a chat with yourself"
     );
   }
-  const conversation_data = await Conversation.create({
-    senderId: get_user_token_doc.userId,
-    receiverId: friend_data.id,
+  const chat_data = await Chat.create({
+    sender_id: get_user_token_doc.userId,
+    receiver_id: friend_data.user_id,
   });
 
   const selected_user_data = {
-    id: user_data.id,
+    user_id: user_data.user_id,
     name: user_data.name,
     email: user_data.email,
     username: user_data.username,
   };
   const selected_friend_data = {
-    id: friend_data.id,
+    friend_id: friend_data.user_id,
     name: friend_data.name,
     email: friend_data.email,
     username: friend_data.username,
   };
 
-  const selected_conversation_data = {
-    conversation_id: conversation_data.conversation_id,
-    created_at: conversation_data.createdAt,
-    updated_at: conversation_data.updatedAt,
+  const selected_chat_data = {
+    chat_id: chat_data.chat_id,
+    created_at: chat_data.createdAt,
+    updated_at: chat_data.updatedAt,
   };
 
   return {
     selected_user_data,
     selected_friend_data,
-    selected_conversation_data,
+    selected_chat_data,
   };
 };
 
-const getCurrentUsersConversations = async (access_token) => {
+const getCurrentUserschats = async (access_token) => {
   const get_user_token_doc = await Token.findOne({
     where: {
       token: access_token,
@@ -99,21 +90,21 @@ const getCurrentUsersConversations = async (access_token) => {
   if (!get_user_token_doc) {
     throw new Error("Invalid or expired access token");
   }
-  const conversation_data = await Conversation.findAll({
+  const chat_data = await Chat.findAll({
     where: {
       senderId: get_user_token_doc.userId,
     },
   });
 
-  if (!conversation_data) {
+  if (!chat_data) {
     throw new Error("Not data found");
   }
 
-  const selectedConversations = [];
+  const selected_chats = [];
 
-  for (const conversation of conversation_data) {
-    const friend_data = await User.findByPk(conversation.receiverId);
-    const user_data = await User.findByPk(conversation.senderId);
+  for (const chat of chat_data) {
+    const friend_data = await User.findByPk(chat.receiverId);
+    const user_data = await User.findByPk(chat.senderId);
 
     if (!friend_data || !user_data) {
       throw new Error("Users not found");
@@ -133,20 +124,20 @@ const getCurrentUsersConversations = async (access_token) => {
       username: friend_data.username,
     };
 
-    const selected_conversation_data = {
-      conversation_id: conversation.id,
-      created_at: conversation.createdAt,
-      updated_at: conversation.updatedAt,
+    const selected_chat_data = {
+      chat_id: chat.id,
+      created_at: chat.createdAt,
+      updated_at: chat.updatedAt,
     };
 
-    selectedConversations.push({
+    selected_chats.push({
       selected_user_data,
       selected_friend_data,
-      selected_conversation_data,
+      selected_chat_data,
     });
   }
 
-  return selectedConversations;
+  return selected_chats;
 };
 
-module.exports = { createNewConversation, getCurrentUsersConversations };
+module.exports = { createNewChat, getCurrentUserschats };
