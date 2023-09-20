@@ -1,5 +1,5 @@
 const httpStatus = require("http-status");
-const { User, Token } = require("../../models");
+const { User, Post, Token } = require("../../models");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
@@ -148,6 +148,44 @@ const emailVerification = async (emailVerificationToken) => {
   return updatedUser;
 };
 
+const generateUserData = async (userData) => {
+  if (Array.isArray(userData)) {
+    return userData.map((user) => {
+      return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+        profilePhoto: user.profilePhoto,
+        bio: user.bio,
+        location: user.location,
+        website: user.website,
+        amazon_wishlist: user.amazon_wishlist,
+        phone_number: user.phone_number,
+        profile_photo: user.profile_photo,
+        cover_photo: user.cover_photo,
+      };
+    });
+  } else {
+    return {
+      id: userData.id,
+      name: userData.name,
+      email: userData.email,
+      username: userData.username,
+      role: userData.role,
+      profilePhoto: userData.profilePhoto,
+      bio: userData.bio,
+      location: userData.location,
+      website: userData.website,
+      amazon_wishlist: userData.amazon_wishlist,
+      phone_number: userData.phone_number,
+      profile_photo: userData.profile_photo,
+      cover_photo: userData.cover_photo,
+    };
+  }
+};
+
 module.exports = {
   registerUser,
   loginUserWithEmailAndPassword,
@@ -157,4 +195,5 @@ module.exports = {
   emailVerification,
   changePassword,
   generateUsername,
+  generateUserData,
 };
