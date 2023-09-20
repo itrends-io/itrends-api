@@ -1,21 +1,21 @@
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  const Conversation = sequelize.define("Conversation", {
-    conversation_id: {
+  const Chat = sequelize.define("Chat", {
+    chat_id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       unique: true,
     },
-    senderId: {
-      type: DataTypes.INTEGER,
+    sender_id: {
+      type: DataTypes.UUID,
       allowNull: false,
     },
-    receiverId: {
-      type: DataTypes.INTEGER,
+    receiver_id: {
+      type: DataTypes.UUID,
       allowNull: false,
     },
   });
-  return Conversation;
+  return Chat;
 };

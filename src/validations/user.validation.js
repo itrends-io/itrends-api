@@ -9,6 +9,14 @@ const getOneUserByPk = {
       .message('"{{#label}}" must be a valid token type'),
   }),
 };
+const getUserByQuery = {
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+};
 
 const followUserByPk = {
   body: Joi.object().keys({
@@ -26,4 +34,5 @@ module.exports = {
   getOneUserByPk,
   followUserByPk,
   unFollowUserByPk,
+  getUserByQuery,
 };

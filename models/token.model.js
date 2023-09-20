@@ -3,13 +3,19 @@ const { tokenTypes } = require("../config/token");
 
 module.exports = (sequelize) => {
   const Token = sequelize.define("Token", {
+    token_id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+      unique: true,
+    },
     token: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
     },
     userId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
     },
     type: {

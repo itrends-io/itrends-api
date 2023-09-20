@@ -3,37 +3,34 @@ const {
   userService,
   tokenService,
   followService,
-  conversationService,
+  chatService,
 } = require("../services");
 const catchAsync = require("../utils/catchAsync");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 
-const createConversation = catchAsync(async (req, res) => {
+const createChat = catchAsync(async (req, res) => {
   if (!req.headers.authorization) {
     throw new Error("Token is required");
   }
   const [, token] = req.headers.authorization.split(" ");
-  const data = await conversationService.createNewConversation(
-    req.body.friendId,
-    token
-  );
+  const data = await chatService.createNewChat(req.body.friend_id, token);
   res.status(httpStatus.CREATED).send({
     data: data,
-    message: "Conversation created",
+    message: "Chat created",
   });
 });
 
-const getCurrentUsersConversations = catchAsync(async (req, res) => {
+const getCurrentUsersChat = catchAsync(async (req, res) => {
   if (!req.headers.authorization) {
     throw new Error("Token is required");
   }
   const [, token] = req.headers.authorization.split(" ");
-  const data = await conversationService.getCurrentUsersConversations(token);
+  const data = await chatService.getCurrentUsersChats(token);
 
   res
     .status(httpStatus.CREATED)
-    .send({ data: data, message: "Conversation generated" });
+    .send({ data: data, message: "Chat generated" });
 });
 
-module.exports = { createConversation, getCurrentUsersConversations };
+module.exports = { createChat, getCurrentUsersChat };

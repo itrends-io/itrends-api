@@ -9,7 +9,7 @@ const bcrypt = require("bcryptjs");
 
 const generateUsername = async () => {
   const users = await User.findAll();
-  return `u${users.length}`;
+  return `iTr${users.length}`;
 };
 
 const registerUser = async (userBody) => {
@@ -59,7 +59,7 @@ const changePassword = async (userBody, accessToken) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(userBody.new_password, salt);
 
-  await updateUserById(user.id, { password: hashedPassword });
+  await updateUserById(user.user_id, { password: hashedPassword });
 };
 
 const logoutUser = async (refreshToken) => {
@@ -94,13 +94,13 @@ const resetPasswordFromEmailToken = async (resetPasswordToken, newPassword) => {
   }
   await Token.destroy({
     where: {
-      userId: user.id,
+      userId: user.user_id,
       type: tokenTypes.RESET_PASSWORD,
     },
   });
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(newPassword, salt);
-  await updateUserById(user.id, { password: hashedPassword });
+  await updateUserById(user.user_id, { password: hashedPassword });
 };
 
 const refreshAuthToken = async (refreshToken) => {
@@ -133,11 +133,11 @@ const emailVerification = async (emailVerificationToken) => {
   }
   await Token.destroy({
     where: {
-      userId: user.id,
+      userId: user.user_id,
       type: tokenTypes.EMAIL_VERIFICATION,
     },
   });
-  const updatedUser = await updateUserById(user.id, {
+  const updatedUser = await updateUserById(user.user_id, {
     isEmailVerified: true,
   });
 
@@ -152,7 +152,7 @@ const generateUserData = async (userData) => {
   if (Array.isArray(userData)) {
     return userData.map((user) => {
       return {
-        id: user.id,
+        user_id: user.user_id,
         name: user.name,
         email: user.email,
         username: user.username,
@@ -161,6 +161,8 @@ const generateUserData = async (userData) => {
         bio: user.bio,
         location: user.location,
         website: user.website,
+        followers_count: userData.followers_count,
+        following_count: userData.following_count,
         amazon_wishlist: user.amazon_wishlist,
         phone_number: user.phone_number,
         profile_photo: user.profile_photo,
@@ -169,7 +171,7 @@ const generateUserData = async (userData) => {
     });
   } else {
     return {
-      id: userData.id,
+      user_id: userData.user_id,
       name: userData.name,
       email: userData.email,
       username: userData.username,
@@ -178,6 +180,8 @@ const generateUserData = async (userData) => {
       bio: userData.bio,
       location: userData.location,
       website: userData.website,
+      followers_count: userData.followers_count,
+      following_count: userData.following_count,
       amazon_wishlist: userData.amazon_wishlist,
       phone_number: userData.phone_number,
       profile_photo: userData.profile_photo,

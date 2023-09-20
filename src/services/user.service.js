@@ -39,6 +39,9 @@ const getUserById = async (userId, accessToken) => {
     throw new Error("Invalid or expired access token");
   }
   const user = await User.findByPk(userId);
+  if (!user) {
+    throw new Error("User not found");
+  }
   return user;
 };
 
@@ -52,7 +55,6 @@ const getAllUsers = async (accessToken) => {
       type: tokenTypes.ACCESS,
     },
   });
-  logger.info(getUserTokenDoc);
   if (!getUserTokenDoc) {
     throw new Error("Invalid or expired access token");
   }
@@ -62,15 +64,23 @@ const getAllUsers = async (accessToken) => {
 };
 
 const getUserByEmail = async (email) => {
-  return User.findOne({
+  const user = User.findOne({
     where: { email: email },
   });
+  if (!user) {
+    throw new Error("User not found");
+  }
+  return user;
 };
 
 const getUserByUsername = async (username) => {
-  return User.findOne({
+  const user = User.findOne({
     where: { username: username },
   });
+  if (!user) {
+    throw new Error("User not found");
+  }
+  return user;
 };
 
 const updateUserById = async (userId, updateBody) => {
@@ -121,16 +131,16 @@ const uploadImages = async (files) => {
 };
 
 const getUserInfo = async (query, token) => {
-  const { id, email, username } = query;
+  const { user_id, email, username } = query;
   let user;
-  if (id) {
-    user = await getUserById(id, token);
+  if (user_id) {
+    user = await getUserById(user_id, token);
   } else if (email) {
     user = await getUserByEmail(email);
   } else if (username) {
     user = await getUserByUsername(username);
   } else {
-    const users = await getAllUsers(token);
+    return await getAllUsers(token);
   }
   return user;
 };

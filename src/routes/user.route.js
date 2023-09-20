@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const validate = require("../middlewares/validate");
-const { userController } = require("../controllers");
+const { userController, followController } = require("../controllers");
 const { userValidation } = require("../validations");
 
 module.exports = router;
@@ -12,11 +12,11 @@ router
 
 router
   .route("/")
-  .get(validate(userValidation.getOneUserByPk), userController.getUsers);
+  .get(validate(userValidation.getUserByQuery), userController.getUsersByQuery);
 
 router
   .route("/:userId")
-  .get(validate(userValidation.getOneUserByPk), userController.updateUserById);
+  .get(validate(userValidation.getOneUserByPk), userController.getUserByPk);
 router
   .route("/follow")
   .post(validate(userValidation.followUserByPk), followController.followUser);

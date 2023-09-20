@@ -38,8 +38,8 @@ const followUser = async (token, userToFollowId) => {
   }
   const isAlreadyFollowing = await Follower.findOne({
     where: {
-      user_follower_id: curr_user.id,
-      user_following_id: userToFollow.id,
+      user_follower_id: curr_user.user_id,
+      user_following_id: userToFollow.user_id,
     },
   });
 
@@ -47,12 +47,12 @@ const followUser = async (token, userToFollowId) => {
     throw new ApiError(httpStatus.BAD_REQUEST, "Already following this user");
   }
   const follower = await Follower.create({
-    user_follower_id: curr_user.id,
-    user_following_id: userToFollow.id,
+    user_follower_id: curr_user.user_id,
+    user_following_id: userToFollow.user_id,
   });
 
-  await curr_user.increment("followingCount");
-  await userToFollow.increment("followersCount");
+  await curr_user.increment("following_count");
+  await userToFollow.increment("followers_count");
 
   return follower;
 };
@@ -80,8 +80,8 @@ const unFollowUser = async (token, user_to_follow_id) => {
   }
   const isAlreadyFollowing = await Follower.findOne({
     where: {
-      user_follower_id: curr_user.id,
-      user_following_id: user_to_follow.id,
+      user_follower_id: curr_user.user_id,
+      user_following_id: user_to_follow.user_id,
     },
   });
 
@@ -90,13 +90,13 @@ const unFollowUser = async (token, user_to_follow_id) => {
   }
   const unFollow = await Follower.destroy({
     where: {
-      user_follower_id: curr_user.id,
-      user_following_id: user_to_follow.id,
+      user_follower_id: curr_user.user_id,
+      user_following_id: user_to_follow.user_id,
     },
   });
 
-  await curr_user.decrement("followingCount");
-  await user_to_follow.decrement("followersCount");
+  await curr_user.decrement("following_count");
+  await user_to_follow.decrement("followers_count");
 
   return unFollow;
 };

@@ -2,11 +2,14 @@ const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   const Message = sequelize.define("Message", {
-    conversation_id: {
-      type: DataTypes.INTEGER,
+    message_id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+      unique: true,
     },
     sender_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
     },
     message: {
       type: DataTypes.STRING,
