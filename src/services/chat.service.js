@@ -8,11 +8,10 @@ const { verifyToken } = require("./token.service");
 const { getUserById } = require("./user.service");
 
 Chat.hasMany(Message, {
-  foreignKey: "message_id",
-  as: "message",
-  primaryKey: true,
+  foreignKey: "chat_id",
+  as: "chat",
+  type: DataTypes.UUID,
   unique: true,
-  defaultValue: DataTypes.UUIDV4,
 });
 
 const createNewChat = async (friend_id, accessToken) => {

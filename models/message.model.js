@@ -8,9 +8,6 @@ module.exports = (sequelize) => {
       primaryKey: true,
       unique: true,
     },
-    conversation_id: {
-      type: DataTypes.UUID,
-    },
     sender_id: {
       type: DataTypes.UUID,
     },

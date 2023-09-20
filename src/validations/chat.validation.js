@@ -24,14 +24,14 @@ const get_current_chat = {
 
 const create_message = {
   body: Joi.object().keys({
-    conversation_id: Joi.string().required(),
+    chat_id: Joi.string().required(),
     message: Joi.string().required(),
   }),
 };
 
 const get_messages = {
   body: Joi.object().keys({
-    conversation_id: Joi.string().required(),
+    chat_id: Joi.string().required(),
   }),
 };
 
