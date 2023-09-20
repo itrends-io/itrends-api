@@ -4,9 +4,9 @@ const { v4: uuidv4 } = require("uuid");
 
 module.exports = (sequelize) => {
   const User = sequelize.define("User", {
-    id: {
+    user_id: {
       type: DataTypes.UUID,
-      defaultValue: uuidv4(),
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       unique: true,
     },
@@ -132,7 +132,7 @@ module.exports = (sequelize) => {
     const user = await User.findOne({
       where: {
         email,
-        id: {
+        user_id: {
           [Op.not]: excludeUserId,
         },
       },

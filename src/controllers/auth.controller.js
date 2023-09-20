@@ -11,6 +11,7 @@ const registerUser = catchAsync(async (req, res) => {
   const username = await authService.generateUsername();
   const userbody = { ...req.body, username };
   const user = await authService.registerUser(userbody);
+
   const tokens = await tokenService.generateAuthTokens(user);
   const message = "Successfully registered";
   const userData = await authService.generateUserData(user);

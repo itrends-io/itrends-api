@@ -38,7 +38,7 @@ const followUser = async (token, userToFollowId) => {
   }
   const isAlreadyFollowing = await Follower.findOne({
     where: {
-      user_follower_id: curr_user.id,
+      user_follower_id: curr_user.user_id,
       user_following_id: userToFollow.id,
     },
   });
@@ -47,7 +47,7 @@ const followUser = async (token, userToFollowId) => {
     throw new ApiError(httpStatus.BAD_REQUEST, "Already following this user");
   }
   const follower = await Follower.create({
-    user_follower_id: curr_user.id,
+    user_follower_id: curr_user.user_id,
     user_following_id: userToFollow.id,
   });
 
@@ -80,7 +80,7 @@ const unFollowUser = async (token, user_to_follow_id) => {
   }
   const isAlreadyFollowing = await Follower.findOne({
     where: {
-      user_follower_id: curr_user.id,
+      user_follower_id: curr_user.user_id,
       user_following_id: user_to_follow.id,
     },
   });
@@ -90,7 +90,7 @@ const unFollowUser = async (token, user_to_follow_id) => {
   }
   const unFollow = await Follower.destroy({
     where: {
-      user_follower_id: curr_user.id,
+      user_follower_id: curr_user.user_id,
       user_following_id: user_to_follow.id,
     },
   });

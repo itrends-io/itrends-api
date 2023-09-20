@@ -37,7 +37,7 @@ const googleOAuth = (passport) => {
   );
 
   passport.serializeUser((user, done) => {
-    done(null, user.id);
+    done(null, user.user_id);
   });
   passport.deserializeUser((id, done) => {
     User.findById(id, (err, user) => done(err, user));
@@ -80,7 +80,7 @@ const twitterOAuth = (passport) => {
   );
 
   passport.serializeUser((user, done) => {
-    done(null, user.id);
+    done(null, user.user_id);
   });
 
   passport.deserializeUser((id, done) => {
