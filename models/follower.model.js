@@ -9,7 +9,7 @@ module.exports = (sequelize) => {
       unique: true,
     },
     user_following_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
     },
   });
