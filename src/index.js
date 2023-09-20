@@ -50,8 +50,8 @@ app.options("*", cors(corsConfig));
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    // origin: "*",
-    origin: config.corsOriginSocket,
+    origin: "*",
+    // origin: config.corsOriginSocket,
     methods: ["GET", "POST"],
   },
 });
