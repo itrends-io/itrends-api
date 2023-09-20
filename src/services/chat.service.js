@@ -80,7 +80,7 @@ const createNewChat = async (friend_id, accessToken) => {
   };
 };
 
-const getCurrentUserschats = async (access_token) => {
+const getCurrentUsersChats = async (access_token) => {
   const get_user_token_doc = await Token.findOne({
     where: {
       token: access_token,
@@ -92,7 +92,7 @@ const getCurrentUserschats = async (access_token) => {
   }
   const chat_data = await Chat.findAll({
     where: {
-      senderId: get_user_token_doc.userId,
+      sender_id: get_user_token_doc.userId,
     },
   });
 
@@ -103,8 +103,8 @@ const getCurrentUserschats = async (access_token) => {
   const selected_chats = [];
 
   for (const chat of chat_data) {
-    const friend_data = await User.findByPk(chat.receiverId);
-    const user_data = await User.findByPk(chat.senderId);
+    const friend_data = await User.findByPk(chat.receiver_id);
+    const user_data = await User.findByPk(chat.sender_id);
 
     if (!friend_data || !user_data) {
       throw new Error("Users not found");
@@ -112,20 +112,20 @@ const getCurrentUserschats = async (access_token) => {
     }
 
     const selected_user_data = {
-      id: user_data.id,
+      user_id: user_data.id,
       name: user_data.name,
       email: user_data.email,
       username: user_data.username,
     };
     const selected_friend_data = {
-      id: friend_data.id,
+      friend_id: friend_data.id,
       name: friend_data.name,
       email: friend_data.email,
       username: friend_data.username,
     };
 
     const selected_chat_data = {
-      chat_id: chat.id,
+      chat_id: chat.chat_id,
       created_at: chat.createdAt,
       updated_at: chat.updatedAt,
     };
@@ -140,4 +140,4 @@ const getCurrentUserschats = async (access_token) => {
   return selected_chats;
 };
 
-module.exports = { createNewChat, getCurrentUserschats };
+module.exports = { createNewChat, getCurrentUsersChats };

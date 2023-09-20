@@ -21,16 +21,16 @@ const createChat = catchAsync(async (req, res) => {
   });
 });
 
-const getCurrentUsersConversations = catchAsync(async (req, res) => {
+const getCurrentUsersChat = catchAsync(async (req, res) => {
   if (!req.headers.authorization) {
     throw new Error("Token is required");
   }
   const [, token] = req.headers.authorization.split(" ");
-  const data = await chatService.getCurrentUsersConversations(token);
+  const data = await chatService.getCurrentUsersChats(token);
 
   res
     .status(httpStatus.CREATED)
-    .send({ data: data, message: "Conversation generated" });
+    .send({ data: data, message: "Chat generated" });
 });
 
-module.exports = { createChat, getCurrentUsersConversations };
+module.exports = { createChat, getCurrentUsersChat };

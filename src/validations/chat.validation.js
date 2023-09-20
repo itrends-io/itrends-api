@@ -13,7 +13,7 @@ const createChat = {
   }),
 };
 
-const get_current_conversation = {
+const get_current_chat = {
   headers: Joi.object().keys({
     authorization: Joi.string()
       .required()
@@ -37,7 +37,7 @@ const get_messages = {
 
 module.exports = {
   createChat,
-  get_current_conversation,
+  get_current_chat,
   create_message,
   get_messages,
 };

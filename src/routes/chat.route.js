@@ -13,13 +13,10 @@ module.exports = router;
 
 router
   .route("/")
-  .post(validate(chatValidation.createChat), chatController.createChat);
-
-router
-  .route("/conversation")
+  .post(validate(chatValidation.createChat), chatController.createChat)
   .get(
     validate(chatValidation.get_current_conversation),
-    chatController.getCurrentUsersConversations
+    chatController.getCurrentUsersChat
   );
 
 router
