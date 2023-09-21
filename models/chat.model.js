@@ -1,22 +1,21 @@
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  const Follower = sequelize.define("Follower", {
-    follow_id: {
+  const Chat = sequelize.define("Chat", {
+    chat_id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       unique: true,
     },
-    follower_id: {
+    sender_id: {
       type: DataTypes.UUID,
       allowNull: false,
     },
-    followee_id: {
+    receiver_id: {
       type: DataTypes.UUID,
       allowNull: false,
     },
   });
-
-  return Follower;
+  return Chat;
 };

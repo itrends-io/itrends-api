@@ -50,11 +50,16 @@ const generateAuthTokens = async (user) => {
     "minutes"
   );
   const accessToken = generateToken(
-    user.id,
+    user.user_id,
     accessTokenExpires,
     tokenTypes.ACCESS
   );
-  await saveToken(accessToken, user.id, accessTokenExpires, tokenTypes.ACCESS);
+  await saveToken(
+    accessToken,
+    user.user_id,
+    accessTokenExpires,
+    tokenTypes.ACCESS
+  );
 
   const refreshTokenExpires = moment().add(
     config.jwt.refreshExpirationDays,
@@ -64,14 +69,14 @@ const generateAuthTokens = async (user) => {
     moment().add(5, "minutes")
   );
   const refreshToken = generateToken(
-    user.id,
+    user.user_id,
     refreshTokenExpires,
     tokenTypes.REFRESH
   );
 
   await saveToken(
     refreshToken,
-    user.id,
+    user.user_id,
     refreshTokenExpires,
     tokenTypes.REFRESH
   );
@@ -98,13 +103,13 @@ const generateResetPasswordToken = async (email) => {
     "minutes"
   );
   const resetPasswordToken = generateToken(
-    user.id,
+    user.user_id,
     expires,
     tokenTypes.RESET_PASSWORD
   );
   await saveToken(
     resetPasswordToken,
-    user.id,
+    user.user_id,
     expires,
     tokenTypes.RESET_PASSWORD
   );
@@ -117,13 +122,13 @@ const generateEmailVerificationToken = async (user) => {
     "days"
   );
   const emailVerificationToken = generateToken(
-    user.id,
+    user.user_id,
     expires,
     tokenTypes.EMAIL_VERIFICATION
   );
   await saveToken(
     emailVerificationToken,
-    user.id,
+    user.user_id,
     expires,
     tokenTypes.EMAIL_VERIFICATION
   );

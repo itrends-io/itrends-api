@@ -3,11 +3,14 @@ const helmet = require("helmet");
 const xss = require("xss-clean");
 const cors = require("cors");
 const httpStatus = require("http-status");
+const http = require("http");
 const cookieParser = require("cookie-parser");
 const config = require("../config/config");
 const routes = require("./routes");
 const session = require("express-session");
 const passport = require("passport");
+const { Server } = require("socket.io");
+const socketRoutes = require("./sockets");
 const {
   errorConverter,
   errorHandler,
@@ -44,6 +47,17 @@ const corsConfig = {
 app.use(cors(corsConfig));
 app.options("*", cors(corsConfig));
 
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    // origin: config.corsOriginSocket,
+    methods: ["GET", "POST"],
+  },
+});
+
+socketRoutes(io);
+
 app.use("/api/v1", routes);
 
 app.use(errorConverter);
@@ -53,5 +67,8 @@ db.sequelize.sync().then((req) => {
   logger.info(`Connected to POSTGRES DB: ${config.pg.url}`);
   app.listen(config.port, () => {
     logger.info(`Listening to port ${config.port}`);
+    server.listen(config.socketport, () => {
+      logger.info(`Socket is running ${config.socketport}`);
+    });
   });
 });

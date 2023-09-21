@@ -6,23 +6,36 @@ const logger = require("../../config/logger");
 
 const followUser = catchAsync(async (req, res) => {
   const data = await followService.followUser(
-    req.params.userId,
     req.headers.authorization,
-    req.body.followingId
+    req.body.following_id
   );
   res.status(httpStatus.ACCEPTED).send({ data: "", message: "You followed" });
 });
 
 const unFollowUser = catchAsync(async (req, res) => {
   const data = await followService.unFollowUser(
-    req.params.userId,
     req.headers.authorization,
-    req.body.unFollowId
+    req.body.un_follow_id
   );
   res.status(httpStatus.ACCEPTED).send({ data: "", message: "You unfollowed" });
+});
+
+const followings_list = catchAsync(async (req, res) => {
+  const data = await followService.get_all_followings_list(
+    req.headers.authorization
+  );
+  res.status(httpStatus.ACCEPTED).send({ data: data, message: "Success" });
+});
+const followers_list = catchAsync(async (req, res) => {
+  const data = await followService.get_all_followers_list(
+    req.headers.authorization
+  );
+  res.status(httpStatus.ACCEPTED).send({ data: data, message: "Success" });
 });
 
 module.exports = {
   followUser,
   unFollowUser,
+  followings_list,
+  followers_list,
 };

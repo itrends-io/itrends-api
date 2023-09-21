@@ -1,5 +1,10 @@
 const httpStatus = require("http-status");
-const { userService, tokenService, emailService, authService } = require("../services");
+const {
+  userService,
+  tokenService,
+  emailService,
+  authService,
+} = require("../services");
 const catchAsync = require("../utils/catchAsync");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
@@ -15,7 +20,7 @@ const getUserByPk = catchAsync(async (req, res) => {
   res.status(httpStatus.ACCEPTED).send({ user: userData, message: "" });
 });
 
-const getUsers = catchAsync(async (req, res) => {
+const getUsersByQuery = catchAsync(async (req, res) => {
   console.log(req.headers.authorization);
   if (!req.headers.authorization) {
     throw new Error("Token is required");
@@ -59,6 +64,6 @@ const updateUserById = catchAsync(async (req, res) => {
 module.exports = {
   getAllUsers,
   getUserByPk,
-  getUsers,
+  getUsersByQuery,
   updateUserById,
 };
