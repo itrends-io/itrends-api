@@ -8,7 +8,11 @@ module.exports = (sequelize) => {
       primaryKey: true,
       unique: true,
     },
-    user_following_id: {
+    follower_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    followee_id: {
       type: DataTypes.UUID,
       allowNull: false,
     },
