@@ -20,17 +20,22 @@ const unFollowUser = catchAsync(async (req, res) => {
   res.status(httpStatus.ACCEPTED).send({ data: "", message: "You unfollowed" });
 });
 
-const get_all_followings = catchAsync(async (req, res) => {
-  const data = await followService.get_all_followings(
+const followings_list = catchAsync(async (req, res) => {
+  const data = await followService.get_all_followings_list(
     req.headers.authorization
   );
-
-  console.log(data);
-  res.status(httpStatus.ACCEPTED).send({ data: "", message: "Success" });
+  res.status(httpStatus.ACCEPTED).send({ data: data, message: "Success" });
+});
+const followers_list = catchAsync(async (req, res) => {
+  const data = await followService.get_all_followers_list(
+    req.headers.authorization
+  );
+  res.status(httpStatus.ACCEPTED).send({ data: data, message: "Success" });
 });
 
 module.exports = {
   followUser,
   unFollowUser,
-  get_all_followings,
+  followings_list,
+  followers_list,
 };

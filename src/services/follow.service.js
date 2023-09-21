@@ -89,7 +89,27 @@ const unFollowUser = async (token, user_to_follow_id) => {
   return unFollow;
 };
 
-const get_all_followings = async (token) => {
+const getFollowing = async (user_id) => {
+  const user = await User.findByPk(user_id);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  const following = await user.getFollowing();
+  return following;
+};
+
+const getFollowers = async (user_id) => {
+  const user = await User.findByPk(user_id);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  const followers = await user.getFollowers();
+  return followers;
+};
+
+const get_all_followings_list = async (token) => {
   if (!token) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Ensure you are logged in");
   }
@@ -105,25 +125,45 @@ const get_all_followings = async (token) => {
   }
 
   const user = await User.findByPk(get_user_token_doc.userId);
-  console.log(user);
 
-  const following = await user.getFollowing();
+  const followingList = await getFollowing(user.user_id);
 
-  console.log(following);
+  if (!followingList || followingList.length <= 0) {
+    throw new Error("You follow 0 people");
+  }
 
-  // if (!following || following.length <= 0) {
-  //   throw new Error("You follow 0 people");
-  // }
-
-  return following;
+  return followingList;
 };
 
-// const user = await User.findByPk(userId); // Replace with the user's ID
-// const followers = await user.getFollowers();
-// const following = await user.getFollowing();
+const get_all_followers_list = async (token) => {
+  if (!token) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, "Ensure you are logged in");
+  }
+  const [, access_token] = token.split(" ");
+  const get_user_token_doc = await Token.findOne({
+    where: {
+      token: access_token,
+      type: tokenTypes.ACCESS,
+    },
+  });
+  if (!get_user_token_doc) {
+    throw new Error("Invalid or expired access token");
+  }
+
+  const user = await User.findByPk(get_user_token_doc.userId);
+
+  const followersList = await getFollowers(user.user_id);
+
+  if (!followersList || followersList.length <= 0) {
+    throw new Error("You have 0 followers");
+  }
+
+  return followersList;
+};
 
 module.exports = {
   followUser,
   unFollowUser,
-  get_all_followings,
+  get_all_followings_list,
+  get_all_followers_list,
 };
