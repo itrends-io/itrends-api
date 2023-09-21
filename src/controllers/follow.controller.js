@@ -20,7 +20,17 @@ const unFollowUser = catchAsync(async (req, res) => {
   res.status(httpStatus.ACCEPTED).send({ data: "", message: "You unfollowed" });
 });
 
+const get_all_followings = catchAsync(async (req, res) => {
+  const data = await followService.get_all_followings(
+    req.headers.authorization
+  );
+
+  console.log(data);
+  res.status(httpStatus.ACCEPTED).send({ data: "", message: "Success" });
+});
+
 module.exports = {
   followUser,
   unFollowUser,
+  get_all_followings,
 };

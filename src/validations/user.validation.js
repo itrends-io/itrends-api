@@ -30,9 +30,19 @@ const unFollowUserByPk = {
   }),
 };
 
+const get_all_followings = {
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+};
+
 module.exports = {
   getOneUserByPk,
   followUserByPk,
   unFollowUserByPk,
   getUserByQuery,
+  get_all_followings,
 };

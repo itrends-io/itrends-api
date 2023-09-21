@@ -26,3 +26,10 @@ router
     validate(userValidation.unFollowUserByPk),
     followController.unFollowUser
   );
+
+router
+  .route("/followings")
+  .get(
+    validate(userValidation.get_all_followings),
+    followController.get_all_followings
+  );
