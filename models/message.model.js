@@ -21,6 +21,10 @@ module.exports = (sequelize) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    parent_message_id: {
+      type: DataTypes.UUID,
+      defaultValue: null,
+    },
   });
   return Message;
 };

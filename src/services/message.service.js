@@ -153,9 +153,44 @@ const like_message = async (access_token, user_interacting_id, message_id) => {
   return status;
 };
 
+const reply_to_message = async (access_token, message_body) => {
+  const get_user_token_doc = await Token.findOne({
+    where: {
+      token: access_token,
+      type: tokenTypes.ACCESS,
+    },
+  });
+
+  if (!get_user_token_doc) {
+    throw new Error("Invalid or expired access token");
+  }
+
+  const parent_message = await Message.findByPk(message_body.parent_message_id);
+
+  if (!parent_message) {
+    throw new Error("Parent message not found");
+  }
+  const replyMessage = await Message.create({
+    chat_id: message_body.chat_id,
+    content: message_body.message,
+    sender_id: get_user_token_doc.userId,
+    parent_message_id: parent_message.message_id,
+  });
+
+  const chat = await Chat.findByPk(parent_message.chat_id);
+  if (!chat) {
+    throw new Error("Chat not found");
+  }
+  chat.last_message_id = replyMessage.message_id;
+  await chat.save();
+
+  return replyMessage;
+};
+
 module.exports = {
   create_message,
   get_messages,
   update_chat_read_status,
   like_message,
+  reply_to_message,
 };
