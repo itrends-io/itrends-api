@@ -12,6 +12,7 @@ User.belongsToMany(User, {
   type: DataTypes.UUID,
   unique: true,
 });
+
 User.belongsToMany(User, {
   through: Chat,
   as: "ReceiverChats",
@@ -26,11 +27,17 @@ Chat.hasMany(Message, {
   type: DataTypes.UUID,
   unique: true,
 });
+
 Message.belongsTo(User, {
   foreignKey: "sender_id",
   as: "sender",
   type: DataTypes.UUID,
-  unique: true,
+});
+
+User.hasMany(Message, {
+  foreignKey: "sender_id",
+  as: "sentMessages",
+  type: DataTypes.UUID,
 });
 
 const createNewChat = async (friend_id, accessToken) => {
@@ -121,25 +128,36 @@ const getCurrentUsersChats = async (access_token) => {
   if (!get_user_token_doc) {
     throw new Error("Invalid or expired access token");
   }
-  const chat_data = await Chat.findAll({
-    where: {
-      sender_id: get_user_token_doc.userId,
-    },
-  });
 
-  if (!chat_data) {
-    throw new Error("Not data found");
-  }
+  const chats = await Chat.findAll({
+    where: {
+      [Op.or]: [
+        { chat_sender_id: get_user_token_doc.userId },
+        { chat_receiver_id: get_user_token_doc.userId },
+      ],
+    },
+    include: [
+      {
+        model: Message,
+        as: "chat",
+        include: [
+          {
+            model: User,
+            as: "sender",
+          },
+        ],
+      },
+    ],
+  });
 
   const selected_chats = [];
 
-  for (const chat of chat_data) {
-    const friend_data = await User.findByPk(chat.receiver_id);
-    const user_data = await User.findByPk(chat.sender_id);
+  for (const chat of chats) {
+    const friend_data = await User.findByPk(chat.chat_receiver_id);
+    const user_data = await User.findByPk(chat.chat_sender_id);
 
     if (!friend_data || !user_data) {
       throw new Error("Users not found");
-      continue;
     }
 
     const selected_user_data = {
@@ -157,7 +175,10 @@ const getCurrentUsersChats = async (access_token) => {
 
     const selected_chat_data = {
       chat_id: chat.chat_id,
-      read_status: chat.read_status,
+      last_message_id: chat.last_message_id,
+      chat_sender_id: chat.chat_sender_id,
+      chat_receiver_id: chat.chat_receiver_id,
+      chat: chat.chat,
       created_at: chat.createdAt,
       updated_at: chat.updatedAt,
     };
