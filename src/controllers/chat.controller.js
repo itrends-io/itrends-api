@@ -33,18 +33,4 @@ const getCurrentUsersChat = catchAsync(async (req, res) => {
     .send({ data: data, message: "Chat generated" });
 });
 
-const update_chat_read_status = catchAsync(async (req, res) => {
-  if (!req.headers.authorization) {
-    throw new Error("Token is required");
-  }
-  const [, token] = req.headers.authorization.split(" ");
-  const data = await chatService.update_chat_read_status(
-    token,
-    req.body.chat_id,
-    req.body.is_read
-  );
-
-  res.status(httpStatus.CREATED).send({ data: data, message: "" });
-});
-
-module.exports = { createChat, getCurrentUsersChat, update_chat_read_status };
+module.exports = { createChat, getCurrentUsersChat };

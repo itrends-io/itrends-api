@@ -1,5 +1,5 @@
 const httpStatus = require("http-status");
-const { User, Chat, Message, Token } = require("../../models");
+const { User, Chat, Message, Token, sequelize } = require("../../models");
 const { DataTypes, Op } = require("sequelize");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
@@ -10,7 +10,6 @@ User.belongsToMany(User, {
   as: "SenderChats",
   foreignKey: "chat_sender_id",
   type: DataTypes.UUID,
-  unique: true,
 });
 
 User.belongsToMany(User, {
@@ -18,14 +17,12 @@ User.belongsToMany(User, {
   as: "ReceiverChats",
   foreignKey: "chat_receiver_id",
   type: DataTypes.UUID,
-  unique: true,
 });
 
 Chat.hasMany(Message, {
   foreignKey: "chat_id",
   as: "chat",
   type: DataTypes.UUID,
-  unique: true,
 });
 
 Message.belongsTo(User, {
@@ -91,31 +88,7 @@ const createNewChat = async (friend_id, accessToken) => {
     chat_receiver_id: friend_data.user_id,
   });
 
-  const selected_user_data = {
-    user_id: user_data.user_id,
-    name: user_data.name,
-    email: user_data.email,
-    username: user_data.username,
-  };
-  const selected_friend_data = {
-    friend_id: friend_data.user_id,
-    name: friend_data.name,
-    email: friend_data.email,
-    username: friend_data.username,
-  };
-
-  const selected_chat_data = {
-    chat_id: chat_data.chat_id,
-    last_message_id: chat_data.last_message_id,
-    created_at: chat_data.createdAt,
-    updated_at: chat_data.updatedAt,
-  };
-
-  return {
-    selected_user_data,
-    selected_friend_data,
-    selected_chat_data,
-  };
+  return chat_data;
 };
 
 const getCurrentUsersChats = async (access_token) => {
@@ -150,71 +123,10 @@ const getCurrentUsersChats = async (access_token) => {
     ],
   });
 
-  const selected_chats = [];
-
-  for (const chat of chats) {
-    const friend_data = await User.findByPk(chat.chat_receiver_id);
-    const user_data = await User.findByPk(chat.chat_sender_id);
-
-    if (!friend_data || !user_data) {
-      throw new Error("Users not found");
-    }
-
-    const selected_user_data = {
-      user_id: user_data.id,
-      name: user_data.name,
-      email: user_data.email,
-      username: user_data.username,
-    };
-    const selected_friend_data = {
-      friend_id: friend_data.id,
-      name: friend_data.name,
-      email: friend_data.email,
-      username: friend_data.username,
-    };
-
-    const selected_chat_data = {
-      chat_id: chat.chat_id,
-      last_message_id: chat.last_message_id,
-      chat_sender_id: chat.chat_sender_id,
-      chat_receiver_id: chat.chat_receiver_id,
-      chat: chat.chat,
-      created_at: chat.createdAt,
-      updated_at: chat.updatedAt,
-    };
-
-    selected_chats.push({
-      selected_user_data,
-      selected_friend_data,
-      selected_chat_data,
-    });
-  }
-
-  return selected_chats;
-};
-
-const update_chat_read_status = async (access_token, chat_id, is_read) => {
-  const get_user_token_doc = await Token.findOne({
-    where: {
-      token: access_token,
-      type: tokenTypes.ACCESS,
-    },
-  });
-
-  if (!get_user_token_doc) {
-    throw new Error("Invalid or expired access token");
-  }
-
-  const chat = await Chat.findByPk(chat_id);
-  if (!chat) {
-    throw new Error("Chat not found");
-  }
-  chat.read_status = is_read;
-  return await chat.save();
+  return chats;
 };
 
 module.exports = {
   createNewChat,
   getCurrentUsersChats,
-  update_chat_read_status,
 };

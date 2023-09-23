@@ -13,7 +13,6 @@ module.exports = (sequelize) => {
     },
     chat_id: {
       type: DataTypes.UUID,
-      unique: true,
     },
     content: {
       type: DataTypes.STRING,

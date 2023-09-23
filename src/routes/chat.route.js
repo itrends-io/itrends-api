@@ -23,8 +23,12 @@ router
   .route("/update")
   .patch(
     validate(chatValidation.update_chat_read_status),
-    chatController.update_chat_read_status
+    messageController.update_chat_read_status
   );
+
+router
+  .route("/like")
+  .post(validate(chatValidation.like_message), messageController.like_message);
 
 router
   .route("/message")

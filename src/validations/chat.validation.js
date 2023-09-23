@@ -30,7 +30,7 @@ const update_chat_read_status = {
       .message('"{{#label}}" must be a valid token type'),
   }),
   body: Joi.object().keys({
-    chat_id: Joi.string().required(),
+    message_id: Joi.string().required(),
     is_read: Joi.string().required(),
   }),
 };
@@ -48,10 +48,25 @@ const get_messages = {
   }),
 };
 
+const like_message = {
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+  body: Joi.object().keys({
+    message_id: Joi.string().required(),
+    user_id: Joi.string().required(),
+    type: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   createChat,
   get_current_chat,
   update_chat_read_status,
   create_message,
   get_messages,
+  like_message,
 };

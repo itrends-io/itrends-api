@@ -3,7 +3,7 @@ const paginate = (model) => {
     const { sortBy, populate, limit = 10, page = 1 } = options;
     const offset = (page - 1) * limit;
 
-    let sort = "createdAt"; // Default sorting field
+    let sort = "createdAt";
 
     if (sortBy) {
       sort = sortBy.split(",").map((sortOption) => {
