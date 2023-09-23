@@ -11,7 +11,11 @@ module.exports = (sequelize) => {
     sender_id: {
       type: DataTypes.UUID,
     },
-    message: {
+    chat_id: {
+      type: DataTypes.UUID,
+      unique: true,
+    },
+    content: {
       type: DataTypes.STRING,
     },
     read_status: {

@@ -8,13 +8,17 @@ module.exports = (sequelize) => {
       primaryKey: true,
       unique: true,
     },
-    sender_id: {
+    chat_sender_id: {
       type: DataTypes.UUID,
       allowNull: false,
     },
-    receiver_id: {
+    chat_receiver_id: {
       type: DataTypes.UUID,
       allowNull: false,
+    },
+    last_message_id: {
+      type: DataTypes.UUID,
+      defaultValue: null,
     },
   });
   return Chat;

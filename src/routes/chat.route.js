@@ -20,6 +20,13 @@ router
   );
 
 router
+  .route("/update")
+  .patch(
+    validate(chatValidation.update_chat_read_status),
+    chatController.update_chat_read_status
+  );
+
+router
   .route("/message")
   .post(
     validate(chatValidation.create_message),

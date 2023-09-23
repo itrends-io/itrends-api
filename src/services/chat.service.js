@@ -1,15 +1,34 @@
 const httpStatus = require("http-status");
-const { User, Chat, Follower, Message, Token } = require("../../models");
-const { DataTypes } = require("sequelize");
+const { User, Chat, Message, Token } = require("../../models");
+const { DataTypes, Op } = require("sequelize");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
-const { verifyToken } = require("./token.service");
-const { getUserById } = require("./user.service");
+
+User.belongsToMany(User, {
+  through: Chat,
+  as: "SenderChats",
+  foreignKey: "chat_sender_id",
+  type: DataTypes.UUID,
+  unique: true,
+});
+User.belongsToMany(User, {
+  through: Chat,
+  as: "ReceiverChats",
+  foreignKey: "chat_receiver_id",
+  type: DataTypes.UUID,
+  unique: true,
+});
 
 Chat.hasMany(Message, {
   foreignKey: "chat_id",
   as: "chat",
+  type: DataTypes.UUID,
+  unique: true,
+});
+Message.belongsTo(User, {
+  foreignKey: "sender_id",
+  as: "sender",
   type: DataTypes.UUID,
   unique: true,
 });
@@ -26,20 +45,31 @@ const createNewChat = async (friend_id, accessToken) => {
   }
 
   const user_data = await User.findByPk(get_user_token_doc.userId);
-  const friend_data = await User.findByPk(friend_id);
-  if (!friend_data) {
+  if (!user_data) {
     throw new Error("User not found");
   }
+  const friend_data = await User.findByPk(friend_id);
+  if (!friend_data) {
+    throw new Error("Friend not found");
+  }
 
-  const is_already_conversing = await Chat.findOne({
+  const existingChat = await Chat.findOne({
     where: {
-      sender_id: user_data.user_id,
-      receiver_id: friend_data.user_id,
+      [Op.or]: [
+        {
+          chat_sender_id: user_data.user_id,
+          chat_receiver_id: friend_data.user_id,
+        },
+        {
+          chat_sender_id: friend_data.user_id,
+          chat_receiver_id: user_data.user_id,
+        },
+      ],
     },
   });
 
-  if (is_already_conversing) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Already have a chat this user");
+  if (existingChat) {
+    return existingChat;
   }
 
   if (friend_data.id === user_data.user_id) {
@@ -48,9 +78,10 @@ const createNewChat = async (friend_id, accessToken) => {
       "Cannot create a chat with yourself"
     );
   }
+
   const chat_data = await Chat.create({
-    sender_id: get_user_token_doc.userId,
-    receiver_id: friend_data.user_id,
+    chat_sender_id: user_data.user_id,
+    chat_receiver_id: friend_data.user_id,
   });
 
   const selected_user_data = {
@@ -68,6 +99,7 @@ const createNewChat = async (friend_id, accessToken) => {
 
   const selected_chat_data = {
     chat_id: chat_data.chat_id,
+    last_message_id: chat_data.last_message_id,
     created_at: chat_data.createdAt,
     updated_at: chat_data.updatedAt,
   };
@@ -125,6 +157,7 @@ const getCurrentUsersChats = async (access_token) => {
 
     const selected_chat_data = {
       chat_id: chat.chat_id,
+      read_status: chat.read_status,
       created_at: chat.createdAt,
       updated_at: chat.updatedAt,
     };
@@ -139,4 +172,28 @@ const getCurrentUsersChats = async (access_token) => {
   return selected_chats;
 };
 
-module.exports = { createNewChat, getCurrentUsersChats };
+const update_chat_read_status = async (access_token, chat_id, is_read) => {
+  const get_user_token_doc = await Token.findOne({
+    where: {
+      token: access_token,
+      type: tokenTypes.ACCESS,
+    },
+  });
+
+  if (!get_user_token_doc) {
+    throw new Error("Invalid or expired access token");
+  }
+
+  const chat = await Chat.findByPk(chat_id);
+  if (!chat) {
+    throw new Error("Chat not found");
+  }
+  chat.read_status = is_read;
+  return await chat.save();
+};
+
+module.exports = {
+  createNewChat,
+  getCurrentUsersChats,
+  update_chat_read_status,
+};
