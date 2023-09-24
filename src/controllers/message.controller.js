@@ -61,9 +61,20 @@ const like_message = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send({ data: data, message: "" });
 });
 
+const reply_to_message = catchAsync(async (req, res) => {
+  if (!req.headers.authorization) {
+    throw new Error("Token is required");
+  }
+  const [, token] = req.headers.authorization.split(" ");
+  const data = await messageService.reply_to_message(token, req.body);
+
+  res.status(httpStatus.CREATED).send({ data: data, message: "" });
+});
+
 module.exports = {
   create_message,
   get_messages,
   update_chat_read_status,
   like_message,
+  reply_to_message,
 };

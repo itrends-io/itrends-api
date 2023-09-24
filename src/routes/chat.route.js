@@ -31,6 +31,13 @@ router
   .post(validate(chatValidation.like_message), messageController.like_message);
 
 router
+  .route("/reply-message")
+  .post(
+    validate(chatValidation.reply_to_message),
+    messageController.reply_to_message
+  );
+
+router
   .route("/message")
   .post(
     validate(chatValidation.create_message),

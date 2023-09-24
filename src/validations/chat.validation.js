@@ -62,6 +62,20 @@ const like_message = {
   }),
 };
 
+const reply_to_message = {
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+  body: Joi.object().keys({
+    chat_id: Joi.string().required(),
+    message: Joi.string().required(),
+    parent_message_id: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   createChat,
   get_current_chat,
@@ -69,4 +83,5 @@ module.exports = {
   create_message,
   get_messages,
   like_message,
+  reply_to_message,
 };

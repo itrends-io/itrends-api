@@ -10,24 +10,9 @@ const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
 const { DataTypes, Op } = require("sequelize");
+const { messageAssociation } = require("../associations/message.association");
 
-MessageInteraction.belongsTo(User, {
-  foreignKey: "user_id",
-  as: "user",
-  type: DataTypes.UUID,
-});
-
-Message.hasMany(MessageInteraction, {
-  foreignKey: "message_id",
-  as: "interactions",
-  type: DataTypes.UUID,
-});
-
-MessageInteraction.belongsTo(Message, {
-  foreignKey: "message_id",
-  as: "message",
-  type: DataTypes.UUID,
-});
+messageAssociation(User, MessageInteraction, Message);
 
 const create_message = async (access_token, message_body) => {
   const get_user_token_doc = await Token.findOne({
@@ -174,7 +159,7 @@ const reply_to_message = async (access_token, message_body) => {
     chat_id: message_body.chat_id,
     content: message_body.message,
     sender_id: get_user_token_doc.userId,
-    parent_message_id: parent_message.message_id,
+    parent_message_id: parent_message.parent_message_id,
   });
 
   const chat = await Chat.findByPk(parent_message.chat_id);
