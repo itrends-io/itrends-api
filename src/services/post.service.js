@@ -5,10 +5,9 @@ const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
 const { verifyToken } = require("./token.service");
 const { getUserById } = require("./user.service");
+const { postAssociation } = require("../associations/post.associations");
 
-Post.belongsTo(User, {
-  foreignKey: "userId",
-});
+postAssociation(User, Post);
 
 const createPost = async (token, post) => {
   if (!token) {

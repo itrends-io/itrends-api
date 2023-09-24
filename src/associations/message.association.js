@@ -1,6 +1,8 @@
 const { DataTypes, Op } = require("sequelize");
+const paginate = require("../../config/paginate");
 
 const messageAssociation = (User, MessageInteraction, Message) => {
+  paginate(Message);
   MessageInteraction.belongsTo(User, {
     foreignKey: "user_id",
     as: "user",

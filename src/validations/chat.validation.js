@@ -46,6 +46,12 @@ const get_messages = {
   body: Joi.object().keys({
     chat_id: Joi.string().required(),
   }),
+  query: Joi.object().keys({
+    read_status: Joi.string(),
+    sortBy: Joi.string(),
+    limit: Joi.number().integer(),
+    page: Joi.number().integer(),
+  }),
 };
 
 const like_message = {

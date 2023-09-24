@@ -8,6 +8,7 @@ const {
 const catchAsync = require("../utils/catchAsync");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
+const pick = require("../utils/pick");
 
 const create_message = catchAsync(async (req, res) => {
   if (!req.headers.authorization) {
@@ -26,6 +27,8 @@ const get_messages = catchAsync(async (req, res) => {
     throw new Error("Token is required");
   }
   const [, token] = req.headers.authorization.split(" ");
+  const filter = pick(req.query, ["read_status"]);
+  const options = pick(req.query, ["sortBy", "limit", "page"]);
   const data = await messageService.get_messages(token, req.body);
   res.status(httpStatus.CREATED).send({
     data: data,
