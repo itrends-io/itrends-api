@@ -11,12 +11,19 @@ module.exports = (sequelize) => {
     sender_id: {
       type: DataTypes.UUID,
     },
-    message: {
+    chat_id: {
+      type: DataTypes.UUID,
+    },
+    content: {
       type: DataTypes.STRING,
     },
     read_status: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+    },
+    parent_message_id: {
+      type: DataTypes.UUID,
+      defaultValue: null,
     },
   });
   return Message;

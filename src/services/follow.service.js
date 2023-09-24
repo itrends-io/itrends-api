@@ -4,18 +4,9 @@ const { User, Token, Follower } = require("../../models");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
+const { followAssociation } = require("../associations/follow.association");
 
-User.belongsToMany(User, {
-  through: "Follower",
-  as: "followers",
-  foreignKey: "followee_id",
-});
-
-User.belongsToMany(User, {
-  through: "Follower",
-  as: "following",
-  foreignKey: "follower_id",
-});
+followAssociation(User);
 
 const followUser = async (token, userToFollowId) => {
   if (!token) {

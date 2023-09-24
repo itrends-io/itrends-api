@@ -118,6 +118,8 @@ module.exports = (sequelize) => {
     },
   });
 
+  // User.plugin(paginate);
+
   User.beforeCreate(async (user, options) => {
     if (user.changed("password")) {
       user.password = await bcrypt.hash(user.password, 8);
