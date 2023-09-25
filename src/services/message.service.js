@@ -138,6 +138,56 @@ const like_message = async (access_token, user_interacting_id, message_id) => {
   return status;
 };
 
+const unlike_message = async (
+  access_token,
+  user_interacting_id,
+  message_id
+) => {
+  const get_user_token_doc = await Token.findOne({
+    where: {
+      token: access_token,
+      type: tokenTypes.ACCESS,
+    },
+  });
+
+  if (!get_user_token_doc) {
+    throw new Error("Invalid or expired access token");
+  }
+
+  const user = await User.findByPk(user_interacting_id);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const message = await Message.findByPk(message_id);
+  if (!message) {
+    throw new Error("Message not found");
+  }
+
+  const existing_like_interaction = await MessageInteraction.findOne({
+    where: {
+      message_id: message_id,
+      user_id: user.user_id,
+      type: "like",
+    },
+  });
+
+  if (!existing_like_interaction) {
+    throw new Error("You should like a message to unlike");
+  }
+
+  const status = await MessageInteraction.destroy({
+    where: {
+      message_id: message_id,
+      user_id: user.user_id,
+      type: "like",
+    },
+  });
+
+  return status;
+};
+
 const reply_to_message = async (access_token, message_body) => {
   const get_user_token_doc = await Token.findOne({
     where: {
@@ -177,5 +227,6 @@ module.exports = {
   get_messages,
   update_chat_read_status,
   like_message,
+  unlike_message,
   reply_to_message,
 };

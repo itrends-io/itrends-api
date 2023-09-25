@@ -31,6 +31,13 @@ router
   .post(validate(chatValidation.like_message), messageController.like_message);
 
 router
+  .route("/unlike")
+  .delete(
+    validate(chatValidation.unlike_message),
+    messageController.unlike_message
+  );
+
+router
   .route("/reply-message")
   .post(
     validate(chatValidation.reply_to_message),
