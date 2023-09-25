@@ -75,7 +75,7 @@ const unlike_message = catchAsync(async (req, res) => {
     req.body.message_id
   );
 
-  res.status(httpStatus.CREATED).send({ data: data, message: "" });
+  res.status(httpStatus.CREATED).send({ data: "unliked", message: "success" });
 });
 
 const reply_to_message = catchAsync(async (req, res) => {
