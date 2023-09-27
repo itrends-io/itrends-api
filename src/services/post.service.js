@@ -20,16 +20,36 @@ const createPost = async (token, post) => {
 
   const currUser = await verifyToken(accessToken, tokenTypes.ACCESS);
 
-  console.log(currUser.userId);
-
   const post_data = await Post.create({
-    userId: currUser.userId,
+    user_id: currUser.userId,
     post,
   });
 
   return post_data;
 };
 
+const getAllMyPosts = async (token) => {
+  if (!token) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, "Ensure you are logged in");
+  }
+
+  const [, accessToken] = token.split(" ");
+  const currUser = await verifyToken(accessToken, tokenTypes.ACCESS);
+
+  const user_id = currUser.userId;
+
+  const user = await User.findByPk(user_id);
+
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "No user found");
+  }
+
+  const userPosts = await user.getPosts();
+
+  return userPosts;
+};
+
 module.exports = {
   createPost,
+  getAllMyPosts,
 };
