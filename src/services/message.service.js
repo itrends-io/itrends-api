@@ -320,6 +320,56 @@ const unpin_message = async (access_token, data) => {
   return { status, message_data };
 };
 
+const hide_message = async (access_token, data) => {
+  const get_user_token_doc = await Token.findOne({
+    where: {
+      token: access_token,
+      type: tokenTypes.ACCESS,
+    },
+  });
+
+  if (!get_user_token_doc) {
+    throw new Error("Invalid or expired access token");
+  }
+
+  const user = await User.findByPk(data.user_id);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const message = await Message.findByPk(data.message_id);
+
+  if (!message) {
+    throw new Error("Message not found");
+  }
+
+  const existing_hide_interaction = await MessageInteraction.findOne({
+    where: {
+      message_id: data.message_id,
+      user_id: user.user_id,
+      type: "hide",
+    },
+  });
+
+  if (existing_hide_interaction) {
+    throw new Error("You have already hide this message");
+  }
+
+  const status = await MessageInteraction.create({
+    message_id: data.message_id,
+    user_id: user.user_id,
+    type: data.type,
+  });
+
+  if (!message.hide_by.includes(user.user_id)) {
+    message.hide_by.push(user.user_id);
+    await message.save();
+  }
+
+  return status;
+};
+
 module.exports = {
   create_message,
   get_messages,
@@ -329,4 +379,5 @@ module.exports = {
   reply_to_message,
   pin_message,
   unpin_message,
+  hide_message,
 };
