@@ -246,7 +246,7 @@ const pin_message = async (access_token, data) => {
     throw new Error("Message not found");
   }
 
-  const existing_like_interaction = await MessageInteraction.findOne({
+  const existing_pin_interaction = await MessageInteraction.findOne({
     where: {
       message_id: data.message_id,
       user_id: user.user_id,
@@ -254,7 +254,7 @@ const pin_message = async (access_token, data) => {
     },
   });
 
-  if (existing_like_interaction) {
+  if (existing_pin_interaction) {
     throw new Error("You have already pin this message");
   }
 
@@ -270,7 +270,7 @@ const pin_message = async (access_token, data) => {
   return { status, message_data };
 };
 
-const unpin_message = async (access_token, message_id) => {
+const unpin_message = async (access_token, data) => {
   const get_user_token_doc = await Token.findOne({
     where: {
       token: access_token,
@@ -282,23 +282,42 @@ const unpin_message = async (access_token, message_id) => {
     throw new Error("Invalid or expired access token");
   }
 
-  const message = await Message.findByPk(message_id);
+  const user = await User.findByPk(data.user_id);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const message = await Message.findByPk(data.message_id);
 
   if (!message) {
     throw new Error("Message not found");
   }
 
-  if (message.pin_message == true) {
-    message.pinned_status = false;
+  const existing_pin_interaction = await MessageInteraction.findOne({
+    where: {
+      message_id: data.message_id,
+      user_id: user.user_id,
+      type: "pin",
+    },
+  });
+
+  if (!existing_pin_interaction) {
+    throw new Error("You cannot unpin message");
   }
 
-  // const chat = await Chat.findByPk(message.chat_id);
-  // if (chat) {
-  //   chat.last_message_id = message.message_id;
-  //   await chat.save();
-  // }
+  const status = await MessageInteraction.destroy({
+    where: {
+      message_id: data.message_id,
+      user_id: user.user_id,
+      type: data.type,
+    },
+  });
 
-  return await message.save();
+  message.pinned_status = false;
+
+  const message_data = await message.save();
+  return { status, message_data };
 };
 
 module.exports = {

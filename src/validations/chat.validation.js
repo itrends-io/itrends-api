@@ -118,8 +118,9 @@ const unpin_message = {
       .message('"{{#label}}" must be a valid token type'),
   }),
   body: Joi.object().keys({
-    chat_id: Joi.string().required(),
+    user_id: Joi.string().required(),
     message_id: Joi.string().required(),
+    type: Joi.string().required(),
   }),
 };
 

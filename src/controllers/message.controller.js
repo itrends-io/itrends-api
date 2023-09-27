@@ -95,7 +95,17 @@ const pin_message = catchAsync(async (req, res) => {
   const [, token] = req.headers.authorization.split(" ");
   const data = await messageService.pin_message(token, req.body);
 
-  res.status(httpStatus.CREATED).send({ data: data, message: "pinned" });
+  res.status(httpStatus.CREATED).send({ message: "pinned" });
+});
+
+const unpin_message = catchAsync(async (req, res) => {
+  if (!req.headers.authorization) {
+    throw new Error("Token is required");
+  }
+  const [, token] = req.headers.authorization.split(" ");
+  const data = await messageService.unpin_message(token, req.body);
+
+  res.status(httpStatus.CREATED).send({ message: "unpinned" });
 });
 
 module.exports = {
@@ -106,4 +116,5 @@ module.exports = {
   unlike_message,
   reply_to_message,
   pin_message,
+  unpin_message,
 };

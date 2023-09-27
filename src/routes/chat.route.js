@@ -48,6 +48,13 @@ router
   .post(validate(chatValidation.pin_message), messageController.pin_message);
 
 router
+  .route("/message/unpin")
+  .delete(
+    validate(chatValidation.unpin_message),
+    messageController.unpin_message
+  );
+
+router
   .route("/message")
   .post(
     validate(chatValidation.create_message),
