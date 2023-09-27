@@ -11,6 +11,10 @@ router
   .get(validate(userValidation.getOneUserByPk), userController.getUserByPk);
 
 router
+  .route("/taguser")
+  .get(validate(userValidation.getOneUserByPk), userController.taggedUsers);
+
+router
   .route("/")
   .get(validate(userValidation.getUserByQuery), userController.getUsersByQuery);
 

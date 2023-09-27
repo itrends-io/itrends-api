@@ -3,6 +3,7 @@ const { User, Token } = require("../../models");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
+const { Op } = require("sequelize");
 const { verifyToken } = require("./token.service");
 const cloudinary = require("../utils/Cloudinary");
 
@@ -22,6 +23,35 @@ const getSelf = async (accessToken) => {
   }
   const user = await User.findByPk(getUserTokenDoc.userId);
   return user;
+};
+
+const taggedUsers = async (accessToken, query) => {
+  if (!accessToken) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Token is required");
+  }
+  const getUserTokenDoc = await Token.findOne({
+    where: {
+      token: accessToken,
+      type: tokenTypes.ACCESS,
+    },
+  });
+  logger.info(getUserTokenDoc);
+  if (!getUserTokenDoc) {
+    throw new Error("Invalid or expired access token");
+  }
+
+  const matchingUsers = await User.findAll({
+    where: {
+      name: {
+        [Op.like]: `%${query}%`,
+      },
+    },
+    attributes: ["name", "user_id"],
+  });
+
+  const usernames = matchingUsers.map((user) => user);
+
+  return usernames;
 };
 
 const getUserById = async (userId, accessToken) => {
@@ -148,6 +178,7 @@ const getUserInfo = async (query, token) => {
 module.exports = {
   getUserById,
   getSelf,
+  taggedUsers,
   getUserByEmail,
   updateUserById,
   getAllUsers,
