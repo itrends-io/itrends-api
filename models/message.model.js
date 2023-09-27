@@ -25,6 +25,10 @@ module.exports = (sequelize) => {
       type: DataTypes.UUID,
       defaultValue: null,
     },
+     pinned_status: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   });
   return Message;
 };

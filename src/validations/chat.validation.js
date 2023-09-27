@@ -96,6 +96,33 @@ const reply_to_message = {
   }),
 };
 
+const pin_message = {
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+  body: Joi.object().keys({
+    user_id: Joi.string().required(),
+    message_id: Joi.string().required(),
+    type: Joi.string().required(),
+  }),
+};
+
+const unpin_message = {
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+  body: Joi.object().keys({
+    chat_id: Joi.string().required(),
+    message_id: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   createChat,
   get_current_chat,
@@ -105,4 +132,6 @@ module.exports = {
   like_message,
   unlike_message,
   reply_to_message,
+  pin_message,
+  unpin_message,
 };
