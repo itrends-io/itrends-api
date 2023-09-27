@@ -25,6 +25,14 @@ module.exports = (sequelize) => {
       type: DataTypes.UUID,
       defaultValue: null,
     },
+    pinned_status: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    hide_by: {
+      type: DataTypes.ARRAY(DataTypes.UUID),
+      defaultValue: [],
+    },
   });
   return Message;
 };
