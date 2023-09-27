@@ -30,7 +30,7 @@ module.exports = (sequelize) => {
       defaultValue: false,
     },
     hide_by: {
-      type: DataTypes.ARRAY(DataTypes.UUID),
+      type: DataTypes.ARRAY(DataTypes.STRING),
       defaultValue: [],
     },
   });

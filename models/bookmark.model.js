@@ -8,6 +8,12 @@ module.exports = (sequelize) => {
       primaryKey: true,
       unique: true,
     },
+    user_id: {
+      type: DataTypes.UUID,
+    },
+    post_id: {
+      type: DataTypes.UUID,
+    },
   });
 
   return Bookmark;

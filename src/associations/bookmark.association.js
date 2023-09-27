@@ -1,7 +1,7 @@
 const { DataTypes, Op } = require("sequelize");
 const paginate = require("../../config/paginate");
 
-const bookmarkAssociation = () => {
+const bookmarkAssociation = (User, Post, Bookmark) => {
   paginate(Bookmark);
 
   User.hasMany(Bookmark, {
