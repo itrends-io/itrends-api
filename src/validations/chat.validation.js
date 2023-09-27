@@ -124,6 +124,20 @@ const unpin_message = {
   }),
 };
 
+const hide_message = {
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+  body: Joi.object().keys({
+    user_id: Joi.string().required(),
+    message_id: Joi.string().required(),
+    type: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   createChat,
   get_current_chat,
@@ -135,4 +149,5 @@ module.exports = {
   reply_to_message,
   pin_message,
   unpin_message,
+  hide_message,
 };

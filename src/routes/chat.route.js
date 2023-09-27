@@ -55,6 +55,10 @@ router
   );
 
 router
+  .route("/message/hide")
+  .post(validate(chatValidation.hide_message), messageController.hide_message);
+
+router
   .route("/message")
   .post(
     validate(chatValidation.create_message),

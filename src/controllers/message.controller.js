@@ -108,6 +108,18 @@ const unpin_message = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send({ message: "unpinned" });
 });
 
+const hide_message = catchAsync(async (req, res) => {
+  if (!req.headers.authorization) {
+    throw new Error("Token is required");
+  }
+  const [, token] = req.headers.authorization.split(" ");
+  const data = await messageService.hide_message(token, req.body);
+
+  res
+    .status(httpStatus.CREATED)
+    .send({ data: data, message: "hide successful" });
+});
+
 module.exports = {
   create_message,
   get_messages,
@@ -117,4 +129,5 @@ module.exports = {
   reply_to_message,
   pin_message,
   unpin_message,
+  hide_message,
 };

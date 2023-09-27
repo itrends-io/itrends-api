@@ -344,17 +344,17 @@ const hide_message = async (access_token, data) => {
     throw new Error("Message not found");
   }
 
-  const existing_hide_interaction = await MessageInteraction.findOne({
-    where: {
-      message_id: data.message_id,
-      user_id: user.user_id,
-      type: "hide",
-    },
-  });
+  // const existing_hide_interaction = await MessageInteraction.findOne({
+  //   where: {
+  //     message_id: data.message_id,
+  //     user_id: user.user_id,
+  //     type: "hide",
+  //   },
+  // });
 
-  if (existing_hide_interaction) {
-    throw new Error("You have already hide this message");
-  }
+  // if (existing_hide_interaction) {
+  //   throw new Error("You have already hide this message");
+  // }
 
   const status = await MessageInteraction.create({
     message_id: data.message_id,
@@ -364,6 +364,7 @@ const hide_message = async (access_token, data) => {
 
   if (!message.hide_by.includes(user.user_id)) {
     message.hide_by.push(user.user_id);
+    logger.info(message);
     await message.save();
   }
 
