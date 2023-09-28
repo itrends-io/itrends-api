@@ -14,4 +14,11 @@ router
     bookmarkController.add_post_to_bookmark
   );
 
+router
+  .route("/bookmark")
+  .get(
+    validate(bookmarkValidation.get_all_bookmarked),
+    bookmarkController.get_all_bookmarked
+  );
+
 module.exports = router;

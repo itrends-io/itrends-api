@@ -14,6 +14,14 @@ module.exports = (sequelize) => {
     post_id: {
       type: DataTypes.UUID,
     },
+    type: {
+      type: DataTypes.STRING,
+      defaultValue: null,
+    },
+    url: {
+      type: DataTypes.STRING,
+      defaultValue: null,
+    },
   });
 
   return Bookmark;
