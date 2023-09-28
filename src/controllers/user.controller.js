@@ -41,6 +41,16 @@ const getAllUsers = catchAsync(async (req, res) => {
   res.status(httpStatus.ACCEPTED).send({ users, message: "success" });
 });
 
+const taggedUsers = catchAsync(async (req, res) => {
+  const { name } = req.query;
+  if (!req.headers.authorization) {
+    throw new Error("Token is required");
+  }
+  const [, token] = req.headers.authorization.split(" ");
+  const users = await userService.taggedUsers(token, name);
+  res.status(httpStatus.ACCEPTED).send({ message: "success", users });
+});
+
 const updateUserById = catchAsync(async (req, res) => {
   const { userId } = req.params;
   const updateFields = req.body;
@@ -66,4 +76,5 @@ module.exports = {
   getUserByPk,
   getUsersByQuery,
   updateUserById,
+  taggedUsers,
 };

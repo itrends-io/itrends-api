@@ -4,3 +4,4 @@ module.exports.followController = require("./follow.controller");
 module.exports.chatController = require("./chat.controller");
 module.exports.messageController = require("./message.controller");
 module.exports.postController = require("./post.controller");
+module.exports.bookmarkController = require("./bookmark.controller");

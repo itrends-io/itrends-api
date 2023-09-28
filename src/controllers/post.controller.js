@@ -14,6 +14,13 @@ const createPost = catchAsync(async (req, res) => {
     .send({ message: "Post successfully created", data });
 });
 
+const getAllMyPosts = catchAsync(async (req, res) => {
+  const data = await postService.getAllMyPosts(req.headers.authorization);
+
+  res.status(httpStatus.ACCEPTED).json(data);
+});
+
 module.exports = {
   createPost,
+  getAllMyPosts,
 };
