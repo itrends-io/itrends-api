@@ -11,7 +11,7 @@ const add_post_to_bookmark = catchAsync(async (req, res) => {
   }
   const [, token] = req.headers.authorization.split(" ");
   const data = await bookmarkService.add_post_to_bookmark(token, req.body);
-  res.status(httpStatus.ACCEPTED).send({ data: data, message: "Post saved" });
+  res.status(httpStatus.ACCEPTED).send({ message: "Post saved" });
 });
 
 const get_all_bookmarked = catchAsync(async (req, res) => {
@@ -33,7 +33,17 @@ const get_all_bookmarked = catchAsync(async (req, res) => {
   });
 });
 
+const remove_post_from_bookmark = catchAsync(async (req, res) => {
+  if (!req.headers.authorization) {
+    throw new Error("Token is required");
+  }
+  const [, token] = req.headers.authorization.split(" ");
+  const data = await bookmarkService.remove_post_from_bookmark(token, req.body);
+  res.status(httpStatus.ACCEPTED).send({ message: "Post removed" });
+});
+
 module.exports = {
   add_post_to_bookmark,
   get_all_bookmarked,
+  remove_post_from_bookmark,
 };

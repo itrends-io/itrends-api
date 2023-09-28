@@ -21,4 +21,11 @@ router
     bookmarkController.get_all_bookmarked
   );
 
+router
+  .route("/bookmark")
+  .delete(
+    validate(bookmarkValidation.remove_post_from_bookmark),
+    bookmarkController.remove_post_from_bookmark
+  );
+
 module.exports = router;
