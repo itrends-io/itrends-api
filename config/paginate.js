@@ -1,5 +1,3 @@
-const sequelize = require("../models");
-
 const paginate = (model) => {
   model.paginate = async function (filter = {}, options = {}) {
     const { sortBy, populate, limit = 10, page = 1 } = options;

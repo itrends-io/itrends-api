@@ -14,9 +14,6 @@ const add_post_to_bookmark = {
 };
 
 const get_all_bookmarked = {
-  // body: Joi.object().keys({
-  //   post_id: Joi.string().required(),
-  // }),
   headers: Joi.object().keys({
     authorization: Joi.string()
       .required()

@@ -54,12 +54,15 @@ const get_all_bookmarked = async (access_token, data, filter, options) => {
     throw new Error("Invalid or expired access token");
   }
 
-  const bookmarked = await Bookmark.paginate(filter, {
-    sortBy: options.sortBy,
-    populate: [User, Post],
-    limit: options.limit,
-    page: options.page,
-  });
+  const bookmarked = await Bookmark.paginate(
+    { ...filter, user_id: get_user_token_doc.userId },
+    {
+      sortBy: options.sortBy,
+      populate: [User, Post],
+      limit: options.limit,
+      page: options.page,
+    }
+  );
 
   const page = parseInt(options.page, 10) || 1;
   const has_next = bookmarked.totalPages > page;
