@@ -4,6 +4,7 @@ const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 const { tokenTypes } = require("../../config/token");
 const { bookmarkAssociation } = require("../associations/bookmark.association");
+// const paginate = require("../../config/paginate");
 
 bookmarkAssociation(User, Post, Bookmark);
 
@@ -53,21 +54,20 @@ const get_all_bookmarked = async (access_token, data, filter, options) => {
     throw new Error("Invalid or expired access token");
   }
 
-  const bookmarked_post = await Bookmark.findAll({
-    where: {
-      post_id: data.post_id,
-    },
-    include: [
-      {
-        model: Post,
-      },
-      {
-        model: User,
-      },
-    ],
+  const bookmarked = await Bookmark.paginate(filter, {
+    sortBy: options.sortBy,
+    populate: [User, Post],
+    limit: options.limit,
+    page: options.page,
   });
- return bookmarked_post
- 
+
+  const page = parseInt(options.page, 10) || 1;
+  const has_next = bookmarked.totalPages > page;
+
+  return {
+    bookmarked_post: bookmarked.results,
+    has_next,
+  };
 };
 
 module.exports = { add_post_to_bookmark, get_all_bookmarked };

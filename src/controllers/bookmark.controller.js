@@ -19,14 +19,7 @@ const get_all_bookmarked = catchAsync(async (req, res) => {
     throw new Error("Token is required");
   }
   const [, token] = req.headers.authorization.split(" ");
-  const filter = pick(req.query, [
-    "all",
-    "photos",
-    "videos",
-    "audio",
-    "others",
-    "locked",
-  ]);
+  const filter = pick(req.query, ["type"]);
   const options = pick(req.query, ["sortBy", "limit", "page"]);
   const data = await bookmarkService.get_all_bookmarked(
     token,

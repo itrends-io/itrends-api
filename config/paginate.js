@@ -1,3 +1,5 @@
+const sequelize = require("../models");
+
 const paginate = (model) => {
   model.paginate = async function (filter = {}, options = {}) {
     const { sortBy, populate, limit = 10, page = 1 } = options;
@@ -22,11 +24,9 @@ const paginate = (model) => {
     let results = rows;
 
     if (populate) {
-      const include = populate.split(",").map((populateOption) => {
-        return {
-          model: sequelize.models[populateOption],
-        };
-      });
+      const include = populate.map((includeModel) => ({
+        model: includeModel,
+      }));
 
       results = await model.findAll({
         where: filter,
