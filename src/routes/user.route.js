@@ -13,3 +13,11 @@ router
 router
   .route("/")
   .get(validate(userValidation.getOneUserByPk), userController.getUsers);
+
+  router
+    .route("/self")
+    .get(validate(userValidation.getOneUserByPk), userController.getUserByPk);
+
+  router
+    .route("/")
+    .get(validate(userValidation.getOneUserByPk), userController.getUsers);
