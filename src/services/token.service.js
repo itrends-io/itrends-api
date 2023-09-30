@@ -3,7 +3,7 @@ const moment = require("moment");
 const httpStatus = require("http-status");
 const config = require("../../config/config");
 const userService = require("./user.service");
-const { Token } = require("../../models");
+const { Token, User } = require("../../models");
 const ApiError = require("../utils/ApiError");
 const { tokenTypes } = require("../../config/token");
 
@@ -94,7 +94,9 @@ const generateAuthTokens = async (user) => {
 };
 
 const generateResetPasswordToken = async (email) => {
-  const user = await userService.getUserByEmail(email);
+  const user = await User.findOne({
+    where: { email: email },
+  });
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "No users found with this email");
   }
@@ -102,6 +104,7 @@ const generateResetPasswordToken = async (email) => {
     config.jwt.resetPasswordExpirationMinutes,
     "minutes"
   );
+  console.log(user);
   const resetPasswordToken = generateToken(
     user.user_id,
     expires,
