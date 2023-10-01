@@ -9,11 +9,11 @@ const { postAssociation } = require("../associations/post.associations");
 
 postAssociation(User, Post);
 
-const createPost = async (token, post) => {
+const createPost = async (token, text) => {
   if (!token) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Ensure you are logged in");
   }
-  if (!post || post === "") {
+  if (!text || text === "") {
     throw new ApiError(httpStatus.NOT_FOUND, "Post field connot be empty");
   }
   const [, accessToken] = token.split(" ");
@@ -22,7 +22,7 @@ const createPost = async (token, post) => {
 
   const post_data = await Post.create({
     user_id: currUser.userId,
-    post,
+    text,
   });
 
   return post_data;
