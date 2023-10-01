@@ -18,7 +18,6 @@ const sequelize = new Sequelize(connectionString, {
   },
 });
 
-// Function to recursively load models from a directory
 const loadModelsRecursive = (directory) => {
   fs.readdirSync(directory).forEach((file) => {
     const filePath = path.join(directory, file);
