@@ -13,11 +13,6 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    tagged_users: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
-      allowNull: true,
-      defaultValue: [],
-    },
     media: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,

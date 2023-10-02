@@ -33,8 +33,19 @@ const followers_list = catchAsync(async (req, res) => {
   res.status(httpStatus.ACCEPTED).send({ data: data, message: "Success" });
 });
 
+const taggedUsers = catchAsync(async (req, res) => {
+  const { name } = req.query;
+  if (!req.headers.authorization) {
+    throw new Error("Token is required");
+  }
+  const [, token] = req.headers.authorization.split(" ");
+  const users = await followService.taggedUsers(token, name);
+  res.status(httpStatus.ACCEPTED).send({ message: "success", users });
+});
+
 module.exports = {
   followUser,
+  taggedUsers,
   unFollowUser,
   followings_list,
   followers_list,
