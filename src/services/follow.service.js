@@ -1,5 +1,5 @@
 const httpStatus = require("http-status");
-const { DataTypes } = require("sequelize");
+const { DataTypes, Op } = require("sequelize");
 const { User, Token, Follower } = require("../../models");
 const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
@@ -152,8 +152,55 @@ const get_all_followers_list = async (token) => {
   return followersList;
 };
 
+const taggedUsers = async (accessToken, query) => {
+  if (!accessToken) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Token is required");
+  }
+  const get_user_token_doc = await Token.findOne({
+    where: {
+      token: accessToken,
+      type: tokenTypes.ACCESS,
+    },
+  });
+
+  if (!get_user_token_doc) {
+    throw new Error("Invalid or expired access token");
+  }
+
+  const user = await User.findByPk(get_user_token_doc.userId);
+
+  const matching_followers_list = await getFollowers(user.user_id);
+
+  if (!matching_followers_list || matching_followers_list.length <= 0) {
+    throw new Error("You have followers");
+  }
+
+  const filtered_followers = matching_followers_list.filter((follower) =>
+    follower.name.includes(query)
+  );
+
+  const usernames = filtered_followers.map((follower) => ({
+    name: follower.name,
+    user_id: follower.user_id,
+  }));
+
+  // const matchingUsers = await matching_followers_list.findAll({
+  //   where: {
+  //     name: {
+  //       [Op.like]: `%${query}%`,
+  //     },
+  //   },
+  //   attributes: ["name", "user_id"],
+  // });
+
+  // const usernames = matchingUsers.map((user) => user);
+
+  return usernames;
+};
+
 module.exports = {
   followUser,
+  taggedUsers,
   unFollowUser,
   get_all_followings_list,
   get_all_followers_list,

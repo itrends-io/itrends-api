@@ -1,4 +1,4 @@
-const postAssociation = (User, Post) => {
+const postAssociation = (User, Post, TaggedUser) => {
   Post.belongsTo(User, {
     foreignKey: "user_id",
     as: "user",
@@ -7,6 +7,17 @@ const postAssociation = (User, Post) => {
   User.hasMany(Post, {
     foreignKey: "user_id",
     as: "posts",
+  });
+
+  Post.belongsToMany(TaggedUser, {
+    through: "PostTaggedUsers",
+    foreignKey: "post_id",
+    as: "tagged_users",
+  });
+
+  TaggedUser.belongsToMany(Post, {
+    through: "PostTaggedUsers",
+    foreignKey: "user_id",
   });
 };
 

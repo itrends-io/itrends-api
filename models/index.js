@@ -18,22 +18,24 @@ const sequelize = new Sequelize(connectionString, {
   },
 });
 
-fs.readdirSync(__dirname)
-  .filter((file) => {
-    return (
+const loadModelsRecursive = (directory) => {
+  fs.readdirSync(directory).forEach((file) => {
+    const filePath = path.join(directory, file);
+    if (fs.statSync(filePath).isDirectory()) {
+      loadModelsRecursive(filePath);
+    } else if (
       file.indexOf(".") !== 0 &&
       file !== basename &&
       file.slice(-3) === ".js" &&
       file.indexOf(".test.js") === -1
-    );
-  })
-  .forEach((file) => {
-    const model = require(path.join(__dirname, file))(
-      sequelize,
-      Sequelize.DataTypes
-    );
-    db[model.name] = model;
+    ) {
+      const model = require(filePath)(sequelize, Sequelize.DataTypes);
+      db[model.name] = model;
+    }
   });
+};
+
+loadModelsRecursive(__dirname);
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
