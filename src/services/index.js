@@ -6,3 +6,4 @@ module.exports.followService = require("./follow.service");
 module.exports.chatService = require("./chat.service");
 module.exports.messageService = require("./message.service");
 module.exports.postService = require("./post.service");
+module.exports.bookmarkService = require("./bookmark.service");

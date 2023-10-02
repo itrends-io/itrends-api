@@ -68,6 +68,20 @@ const like_message = {
   }),
 };
 
+const unlike_message = {
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+  body: Joi.object().keys({
+    message_id: Joi.string().required(),
+    user_id: Joi.string().required(),
+    type: Joi.string().required(),
+  }),
+};
+
 const reply_to_message = {
   headers: Joi.object().keys({
     authorization: Joi.string()
@@ -82,6 +96,48 @@ const reply_to_message = {
   }),
 };
 
+const pin_message = {
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+  body: Joi.object().keys({
+    user_id: Joi.string().required(),
+    message_id: Joi.string().required(),
+    type: Joi.string().required(),
+  }),
+};
+
+const unpin_message = {
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+  body: Joi.object().keys({
+    user_id: Joi.string().required(),
+    message_id: Joi.string().required(),
+    type: Joi.string().required(),
+  }),
+};
+
+const hide_message = {
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+  body: Joi.object().keys({
+    user_id: Joi.string().required(),
+    message_id: Joi.string().required(),
+    type: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   createChat,
   get_current_chat,
@@ -89,5 +145,9 @@ module.exports = {
   create_message,
   get_messages,
   like_message,
+  unlike_message,
   reply_to_message,
+  pin_message,
+  unpin_message,
+  hide_message,
 };

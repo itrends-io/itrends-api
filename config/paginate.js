@@ -22,11 +22,9 @@ const paginate = (model) => {
     let results = rows;
 
     if (populate) {
-      const include = populate.split(",").map((populateOption) => {
-        return {
-          model: sequelize.models[populateOption],
-        };
-      });
+      const include = populate.map((includeModel) => ({
+        model: includeModel,
+      }));
 
       results = await model.findAll({
         where: filter,

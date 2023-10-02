@@ -27,15 +27,36 @@ router
   );
 
 router
-  .route("/like")
+  .route("/message/like")
   .post(validate(chatValidation.like_message), messageController.like_message);
 
 router
-  .route("/reply-message")
+  .route("/message/unlike")
+  .delete(
+    validate(chatValidation.unlike_message),
+    messageController.unlike_message
+  );
+
+router
+  .route("/message/reply-message")
   .post(
     validate(chatValidation.reply_to_message),
     messageController.reply_to_message
   );
+router
+  .route("/message/pin")
+  .post(validate(chatValidation.pin_message), messageController.pin_message);
+
+router
+  .route("/message/unpin")
+  .delete(
+    validate(chatValidation.unpin_message),
+    messageController.unpin_message
+  );
+
+router
+  .route("/message/hide")
+  .post(validate(chatValidation.hide_message), messageController.hide_message);
 
 router
   .route("/message")
