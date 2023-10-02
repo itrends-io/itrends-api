@@ -11,11 +11,14 @@ const connectionString = config.pg.url;
 const sequelize = new Sequelize(connectionString, {
   dialect: "postgres",
   protocol: "postgres",
-  dialectOptions: {
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  },
+  dialectOptions:
+    config.env === "development"
+      ? {
+          ssl: {
+            rejectUnauthorized: false,
+          },
+        }
+      : {},
 });
 
 fs.readdirSync(__dirname)
