@@ -17,6 +17,13 @@ const create_team = async (access_token, data) => {
   if (!get_user_token_doc) {
     throw new Error("Invalid or expired access token");
   }
+
+  const team = await Team.create({
+    team_name: data.team_name,
+    // owner_id: get_user_token_doc.userId,
+    type: data.type,
+  });
+  return team;
 };
 
 module.exports = {

@@ -11,7 +11,7 @@ const create_team = catchAsync(async (req, res) => {
   }
   const [, token] = req.headers.authorization.split(" ");
   const data = await teamService.create_team(token, req.body);
-  // res.status(httpStatus.ACCEPTED).send({ message: "Post saved" });
+  res.status(httpStatus.ACCEPTED).send({ data: data, message: "Team created" });
 });
 
 module.exports = {
