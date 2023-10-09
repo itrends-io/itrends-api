@@ -7,7 +7,8 @@ const logger = require("../../config/logger");
 const createPost = catchAsync(async (req, res) => {
   const data = await postService.createPost(
     req.headers.authorization,
-    req.body.post
+    req.body.text,
+    req.body.tagged_users
   );
   res
     .status(httpStatus.ACCEPTED)
