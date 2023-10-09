@@ -26,6 +26,29 @@ const create_team = async (access_token, data) => {
   return team;
 };
 
+const get_team_by_id = async (access_token, data) => {
+  const get_user_token_doc = await Token.findOne({
+    where: {
+      token: access_token,
+      type: tokenTypes.ACCESS,
+    },
+  });
+  if (!get_user_token_doc) {
+    throw new Error("Invalid or expired access token");
+  }
+  const team = await Team.findByPk(data.team_id, {
+    include: [
+      { model: User, as: "users" },
+      { model: TeamInvite, as: "team_invite" },
+    ],
+  });
+  if (!team) {
+    throw new Error("Team not found");
+  }
+  return team;
+};
+
 module.exports = {
   create_team,
+  get_team_by_id,
 };

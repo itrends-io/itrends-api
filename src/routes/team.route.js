@@ -8,4 +8,5 @@ module.exports = router;
 
 router
   .route("/")
-  .post(validate(teamValidation.create_team), teamController.create_team);
+  .post(validate(teamValidation.create_team), teamController.create_team)
+  .get(validate(teamValidation.get_team_by_id), teamController.get_team_by_id);

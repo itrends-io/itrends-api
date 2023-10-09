@@ -14,6 +14,14 @@ const create_team = catchAsync(async (req, res) => {
   res.status(httpStatus.ACCEPTED).send({ data: data, message: "Team created" });
 });
 
-module.exports = {
-  create_team,
-};
+const get_team_by_id = catchAsync(async (req, res) => {
+  if (!req.headers.authorization) {
+    throw new Error("Token is required");
+  }
+  const [, token] = req.headers.authorization.split(" ");
+  const data = await teamService.get_team_by_id(token, req.body);
+  res
+    .status(httpStatus.ACCEPTED)
+    .send({ data: data, message: "Retrieve teams" });
+});
+module.exports = { create_team, get_team_by_id };

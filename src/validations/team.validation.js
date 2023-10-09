@@ -14,4 +14,16 @@ const create_team = {
   }),
 };
 
-module.exports = { create_team };
+const get_team_by_id = {
+  body: Joi.object().keys({
+    team_id: Joi.string().required(),
+  }),
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+};
+
+module.exports = { create_team, get_team_by_id };
