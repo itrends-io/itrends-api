@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const { tokenTypes } = require("../config/token");
+const { tokenTypes } = require("../../config/token");
 
 module.exports = (sequelize) => {
   const Token = sequelize.define("Token", {

@@ -22,7 +22,7 @@ module.exports = (sequelize) => {
     twitter_id: {
       type: DataTypes.STRING,
     },
-    ouath_google: {
+    oauth_google: {
       type: DataTypes.STRING,
     },
     profile_photo: {
