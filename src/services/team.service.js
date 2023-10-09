@@ -20,7 +20,7 @@ const create_team = async (access_token, data) => {
 
   const team = await Team.create({
     team_name: data.team_name,
-    // owner_id: get_user_token_doc.userId,
+    team_owner: get_user_token_doc.userId,
     type: data.type,
   });
   return team;

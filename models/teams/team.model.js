@@ -17,9 +17,9 @@ module.exports = (sequelize) => {
         len: [4, 40],
       },
     },
-    // owner_id: {
-    //   type: DataTypes.UUID,
-    // },
+    team_owner: {
+      type: DataTypes.UUID,
+    },
     type: {
       type: DataTypes.STRING,
       defaultValue: null,

@@ -116,6 +116,10 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
+    team_id: {
+      type: DataTypes.UUID,
+      defaultValue: null,
+    },
   });
 
   // User.plugin(paginate);
