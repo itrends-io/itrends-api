@@ -113,11 +113,11 @@ const hide_message = catchAsync(async (req, res) => {
     throw new Error("Token is required");
   }
   const [, token] = req.headers.authorization.split(" ");
-  const data = await messageService.hide_message(token, req.body);
+  // const data = await messageService.hide_message(token, req.body);
 
-  res
-    .status(httpStatus.CREATED)
-    .send({ data: data, message: "hide successful" });
+  // res
+  //   .status(httpStatus.CREATED)
+  //   .send({ data: data, message: "hide successful" });
 });
 
 module.exports = {

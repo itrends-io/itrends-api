@@ -29,10 +29,10 @@ module.exports = (sequelize) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    hide_by: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
-      defaultValue: [],
-    },
+    // hide_by: {
+    //   type: DataTypes.ARRAY(DataTypes.STRING),
+    //   defaultValue: [],
+    // },
   });
   return Message;
 };
