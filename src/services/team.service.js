@@ -42,13 +42,27 @@ const get_team_by_id = async (access_token, data) => {
       { model: TeamInvite, as: "team_invite" },
     ],
   });
+
   if (!team) {
-    throw new Error("Team not found");
+    throw new ApiError(httpStatus.BAD_REQUEST, "Team not found");
   }
   return team;
+};
+
+const create_team_invitation = async (access_token, data) => {
+  const get_user_token_doc = await Token.findOne({
+    where: {
+      token: access_token,
+      type: tokenTypes.ACCESS,
+    },
+  });
+  if (!get_user_token_doc) {
+    throw new Error("Invalid or expired access token");
+  }
 };
 
 module.exports = {
   create_team,
   get_team_by_id,
+  create_team_invitation,
 };
