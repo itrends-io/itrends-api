@@ -5,3 +5,4 @@ module.exports.chatController = require("./chat.controller");
 module.exports.messageController = require("./message.controller");
 module.exports.postController = require("./post.controller");
 module.exports.bookmarkController = require("./bookmark.controller");
+module.exports.teamController = require("./team.controller");
