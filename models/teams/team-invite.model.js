@@ -8,7 +8,7 @@ module.exports = (sequelize) => {
       primaryKey: true,
       unique: true,
     },
-    team_name: {
+    username: {
       type: DataTypes.STRING,
       allowNull: false,
       trim: true,
@@ -32,6 +32,7 @@ module.exports = (sequelize) => {
     status: {
       type: DataTypes.STRING,
       allowNull: false,
+      defaultValue: "pending",
     },
     invited_at: {
       type: DataTypes.DATE,
