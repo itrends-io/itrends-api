@@ -10,3 +10,10 @@ router
   .route("/")
   .post(validate(teamValidation.create_team), teamController.create_team)
   .get(validate(teamValidation.get_team_by_id), teamController.get_team_by_id);
+
+router
+  .route("/invite/:team_id")
+  .post(
+    validate(teamValidation.create_team_invitation),
+    teamController.create_team_invitation
+  );

@@ -44,12 +44,12 @@ const get_team_by_id = async (access_token, data) => {
   });
 
   if (!team) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Team not found");
+    throw new ApiError(httpStatus.NOT_FOUND, "Team not found");
   }
   return team;
 };
 
-const create_team_invitation = async (access_token, data) => {
+const create_team_invitation = async (access_token, body_data, params_data) => {
   const get_user_token_doc = await Token.findOne({
     where: {
       token: access_token,
@@ -59,6 +59,16 @@ const create_team_invitation = async (access_token, data) => {
   if (!get_user_token_doc) {
     throw new Error("Invalid or expired access token");
   }
+  const invite = await TeamInvite.create({
+    username: body_data.username,
+    email: body_data.email,
+    role: body_data.role,
+    team_id: params_data.team_id,
+  });
+
+  // console.log(invite);
+
+  return invite;
 };
 
 module.exports = {
