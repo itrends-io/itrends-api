@@ -48,8 +48,6 @@ const create_team_invitation = catchAsync(async (req, res) => {
 
   console.log(req.params.team_id);
 
-  // let team = await get_team_by_id(token, req.params.team_id);
-
   const team = await Team.findByPk(req.params.team_id, {
     include: [
       { model: User, as: "users" },
@@ -95,5 +93,25 @@ const create_team_invitation = catchAsync(async (req, res) => {
     .status(httpStatus.ACCEPTED)
     .send({ data: data, message: "Retrieve teams" });
 });
+const accept_team_invite = catchAsync(async (req, res) => {
+  if (!req.headers.authorization) {
+    throw new Error("Token is required");
+  }
+  const [, token] = req.headers.authorization.split(" ");
+  const team = await teamService.accept_team_invite(
+    token,
+    req.params.team_id,
+    req.body.team_invite_id
+  );
+  // if (req.user.email !== team.team_invite.email) {
+  //   throw new ApiError(httpStatus.FORBIDDEN, "Forbidden");
+  // }
+  res.status(httpStatus.ACCEPTED).send({ data: team, message: "success" });
+});
 
-module.exports = { create_team, get_team_by_id, create_team_invitation };
+module.exports = {
+  create_team,
+  get_team_by_id,
+  create_team_invitation,
+  accept_team_invite,
+};

@@ -17,3 +17,9 @@ router
     validate(teamValidation.create_team_invitation),
     teamController.create_team_invitation
   );
+router
+  .route("/accept-invite/:team_id")
+  .post(
+    validate(teamValidation.accept_team_invitation),
+    teamController.accept_team_invite
+  );

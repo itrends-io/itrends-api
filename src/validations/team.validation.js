@@ -43,4 +43,23 @@ const create_team_invitation = {
   }),
 };
 
-module.exports = { create_team, get_team_by_id, create_team_invitation };
+const accept_team_invitation = {
+  params: Joi.object().keys({
+    team_id: Joi.string().required(),
+  }),
+  body: Joi.object().keys({
+    team_invite_id: Joi.string().required(),
+  }),
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+};
+module.exports = {
+  create_team,
+  get_team_by_id,
+  create_team_invitation,
+  accept_team_invitation,
+};
