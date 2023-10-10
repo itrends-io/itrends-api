@@ -37,9 +37,19 @@ const sendEmailVerificationEmail = async (to, token) => {
   await sendEmail(to, subject, text);
 };
 
+const sendTeamInvitationEmail = async (to, team, invitationId) => {
+  const subject = "Team invitation";
+  const teamInvitationUrl = `${config.clientURL}/team-invitation/${team.team_id}?invitationId=${invitationId}`;
+  const text = `Dear user,
+  To join the team ${team.team_name}, click on this link: ${teamInvitationUrl}
+  If you do not wish to join, then ignore this email.`;
+  await sendEmail(to, subject, text);
+};
+
 module.exports = {
   transport,
   sendEmail,
   sendResetPasswordEmail,
   sendEmailVerificationEmail,
+  sendTeamInvitationEmail,
 };
