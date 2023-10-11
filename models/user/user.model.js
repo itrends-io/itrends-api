@@ -1,6 +1,5 @@
 const bcrypt = require("bcryptjs");
 const { DataTypes, Op } = require("sequelize");
-const { v4: uuidv4 } = require("uuid");
 
 module.exports = (sequelize) => {
   const User = sequelize.define("User", {
@@ -121,8 +120,6 @@ module.exports = (sequelize) => {
       defaultValue: null,
     },
   });
-
-  // User.plugin(paginate);
 
   User.beforeCreate(async (user, options) => {
     if (user.changed("password")) {
