@@ -28,9 +28,10 @@ const manage_privacy_settings = async (access_token, data) => {
     await Privacy.create({ user_id: get_user_token_doc.userId });
   }
 
-  const [updatedRows] = await Privacy.update(data, {
+  const updatedRows = await Privacy.update(data, {
     where: { user_id: get_user_token_doc.userId },
     returning: true,
+    individualHooks: true,
   });
 
   if (updatedRows === 0) {
@@ -40,8 +41,6 @@ const manage_privacy_settings = async (access_token, data) => {
   if (!updatedRows) {
     throw new Error("Error updating privacy settings");
   }
-
-  console.log(updatedRows);
 
   return updatedRows[1][0];
 };
