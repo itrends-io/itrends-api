@@ -9,6 +9,9 @@ module.exports = (sequelize) => {
       primaryKey: true,
       unique: true,
     },
+    user_id: {
+      type: DataTypes.UUID,
+    },
     is_visible_online: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,

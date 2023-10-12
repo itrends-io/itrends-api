@@ -4,6 +4,7 @@ const postRoute = require("./post.route");
 const authRoute = require("./auth.route");
 const chatRoute = require("./chat.route");
 const teamRoute = require("./team.route");
+const userSettingRoute = require("./user-setting.route");
 
 const router = express.Router();
 
@@ -27,6 +28,10 @@ const defaultRoutes = [
   {
     path: "/teams",
     route: teamRoute,
+  },
+  {
+    path: "/settings",
+    route: userSettingRoute,
   },
 ];
 
