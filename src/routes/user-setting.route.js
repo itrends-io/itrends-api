@@ -11,4 +11,8 @@ router
   .put(
     validate(userSettingValidation.manage_privacy_settings),
     userSettingController.manage_privacy_settings
+  )
+  .get(
+    validate(userSettingValidation.get_all_privacy_settings),
+    userSettingController.get_all_privacy_settings
   );

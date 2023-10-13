@@ -24,7 +24,16 @@ const manage_privacy_settings = {
     is_watermark_text: Joi.boolean(),
   }),
 };
+const get_all_privacy_settings = {
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+};
 
 module.exports = {
   manage_privacy_settings,
+  get_all_privacy_settings,
 };
