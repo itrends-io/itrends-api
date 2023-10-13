@@ -13,9 +13,7 @@ const manage_privacy_settings = catchAsync(async (req, res) => {
     token,
     req.body
   );
-  res
-    .status(httpStatus.ACCEPTED)
-    .send({ data: data, message: "settings saved" });
+  res.status(httpStatus.ACCEPTED).send({ message: "settings saved" });
 });
 
 module.exports = {
