@@ -3,6 +3,7 @@ const router = express.Router();
 const validate = require("../middlewares/validate");
 const { userController, followController } = require("../controllers");
 const { userValidation } = require("../validations");
+const upload = require("../utils/multer");
 
 module.exports = router;
 
@@ -38,3 +39,11 @@ router
     validate(userValidation.get_all_followings),
     followController.followers_list
   );
+
+  router
+    .route("/:userId")
+    .put(
+      validate(userValidation.getOneUserByPk),
+      upload.any(),
+      userController.updateUserById
+    );

@@ -21,7 +21,6 @@ const getUserByPk = catchAsync(async (req, res) => {
 });
 
 const getUsersByQuery = catchAsync(async (req, res) => {
-  console.log(req.headers.authorization);
   if (!req.headers.authorization) {
     throw new Error("Token is required");
   }
