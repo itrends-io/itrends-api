@@ -50,11 +50,13 @@ router.post(
   validate(authValidation.logout),
   authController.logoutUser
 );
+
 router.post(
   "/forgot-password",
   validate(authValidation.forgotPassword),
   authController.forgotPassword
 );
+
 router.post(
   "/refresh-tokens",
   validate(authValidation.refreshTokens),
@@ -66,11 +68,13 @@ router.post(
   validate(authValidation.resetPassword),
   authController.resetPassword
 );
+
 router.post(
   "/verify-email",
   validate(authValidation.emailVerification),
   authController.emailVerification
 );
+
 router.post(
   "/change-password",
   validate(authValidation.changePassword),

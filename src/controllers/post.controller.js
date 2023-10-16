@@ -5,10 +5,12 @@ const ApiError = require("../utils/ApiError");
 const logger = require("../../config/logger");
 
 const createPost = catchAsync(async (req, res) => {
+  const poll_options = JSON.parse(req.body.option);
   const data = await postService.createPost(
     req.headers.authorization,
     req.body.text,
-    req.body.tagged_users
+    req.body.tagged_users,
+    poll_options
   );
   res
     .status(httpStatus.ACCEPTED)
