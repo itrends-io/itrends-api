@@ -25,7 +25,32 @@ const get_all_privacy_settings = catchAsync(async (req, res) => {
   res.status(httpStatus.ACCEPTED).send({ data: data, message: "success" });
 });
 
+const manage_fans_and_following = catchAsync(async (req, res) => {
+  if (!req.headers.authorization) {
+    throw new Error("Token is required");
+  }
+  const [, token] = req.headers.authorization.split(" ");
+  const data = await userSettingService.manage_fans_and_following(
+    token,
+    req.body
+  );
+  res.status(httpStatus.ACCEPTED).send({ message: "settings saved" });
+});
+
+const get_all_fans_and_following_settings = catchAsync(async (req, res) => {
+  if (!req.headers.authorization) {
+    throw new Error("Token is required");
+  }
+  const [, token] = req.headers.authorization.split(" ");
+  const data = await userSettingService.get_all_fans_and_following_settings(
+    token
+  );
+  res.status(httpStatus.ACCEPTED).send({ data: data, message: "success" });
+});
+
 module.exports = {
   manage_privacy_settings,
   get_all_privacy_settings,
+  manage_fans_and_following,
+  get_all_fans_and_following_settings,
 };

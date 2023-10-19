@@ -34,7 +34,33 @@ const get_all_privacy_settings = {
   }),
 };
 
+const manage_fans_and_following = {
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+  body: Joi.object().keys({
+    is_auto_follow_back: Joi.boolean(),
+    is_auto_unfollow_back: Joi.boolean(),
+    send_awards_top1: Joi.boolean(),
+    send_awards_top5: Joi.boolean(),
+  }),
+};
+
+const get_all_fans_and_following_settings = {
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+};
+
 module.exports = {
   manage_privacy_settings,
   get_all_privacy_settings,
+  manage_fans_and_following,
+  get_all_fans_and_following_settings,
 };
