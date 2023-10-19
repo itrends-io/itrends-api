@@ -1,7 +1,7 @@
 const { DataTypes, Op } = require("sequelize");
 const paginate = require("../../config/paginate");
 
-const userSettingAssociation = (User, Privacy) => {
+const userSettingAssociation = (User, Privacy, Fans_and_following) => {
   User.hasOne(Privacy, {
     foreignKey: "user_id",
     as: "privacy and settings",
@@ -9,6 +9,16 @@ const userSettingAssociation = (User, Privacy) => {
   Privacy.belongsTo(User, {
     foreignKey: "user_id",
     as: "privacy and settings",
+  });
+
+  User.hasOne(Fans_and_following, {
+    foreignKey: "user_id",
+    as: "fans and following",
+  });
+
+  Fans_and_following.belongsTo(User, {
+    foreignKey: "user_id",
+    as: "fans and following",
   });
 };
 
