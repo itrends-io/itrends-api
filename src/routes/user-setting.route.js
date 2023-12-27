@@ -7,6 +7,12 @@ const { userSettingValidation } = require("../validations");
 module.exports = router;
 
 router
+  .route("/")
+  .post(
+    validate(userSettingValidation.get_all_settings),
+    userSettingController.get_all_settings
+  );
+router
   .route("/privacy")
   .put(
     validate(userSettingValidation.manage_privacy_settings),

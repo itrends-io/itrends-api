@@ -34,6 +34,15 @@ const get_all_privacy_settings = {
   }),
 };
 
+const get_all_settings = {
+  headers: Joi.object().keys({
+    authorization: Joi.string()
+      .required()
+      .regex(tokenRegex)
+      .message('"{{#label}}" must be a valid token type'),
+  }),
+};
+
 const manage_fans_and_following = {
   headers: Joi.object().keys({
     authorization: Joi.string()
@@ -63,4 +72,5 @@ module.exports = {
   get_all_privacy_settings,
   manage_fans_and_following,
   get_all_fans_and_following_settings,
+  get_all_settings,
 };
